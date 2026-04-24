@@ -64,6 +64,21 @@ $bp-lg: 1024px;
     gap: 4px;
   }
 
+  // Font Awesome icon sizing inside mat-icon-button
+  .nav-icon-btn i {
+    font-size: 18px;
+    color: var(--mat-sys-primary);
+    transition: color 150ms ease;
+
+    @media (min-width: $bp-md) {
+      font-size: 20px;
+    }
+  }
+
+  .nav-icon-btn:hover i {
+    color: var(--mat-sys-on-surface);
+  }
+
   // Mobile: user name hidden — saves horizontal space
   &__user {
     font-size: 13px;
@@ -154,25 +169,7 @@ $bp-lg: 1024px;
 .page-header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-
-  @media (min-width: $bp-md) {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  button {
-    // Mobile: full-width CTA
-    width: 100%;
-    height: 48px;
-
-    @media (min-width: $bp-md) {
-      width: auto;
-      flex-shrink: 0;
-    }
-  }
+  gap: 4px;
 }
 
 .page-title {

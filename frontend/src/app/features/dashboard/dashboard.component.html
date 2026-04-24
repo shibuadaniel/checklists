@@ -10,6 +10,15 @@
       <span class="top-nav__user" aria-label="Signed in as {{ userName }}">{{ userName }}</span>
       <button
         mat-icon-button
+        (click)="createChecklist()"
+        aria-label="Create new checklist"
+        matTooltip="New checklist"
+        class="nav-icon-btn"
+      >
+        <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
+      </button>
+      <button
+        mat-icon-button
         (click)="theme.toggle()"
         [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
         [matTooltip]="theme.isDark() ? 'Light mode' : 'Dark mode'"
@@ -68,10 +77,6 @@
             <h1 class="page-title">Dashboard</h1>
             <p class="page-subtitle">Welcome back, {{ userName }}</p>
           </div>
-          <button mat-flat-button (click)="createChecklist()" aria-label="Create a new checklist">
-            <mat-icon>add</mat-icon>
-            New checklist
-          </button>
         </div>
 
         <!-- Stat cards -->
