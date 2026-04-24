@@ -10,8 +10,9 @@ $bp-md: 768px;
 $bp-lg: 1024px;
 
 // ─── Shared palette ──────────────────────────────────────
-$primary-palette: mat.$violet-palette;
-$tertiary-palette: mat.$cyan-palette;
+// Pastel scheme: rose primary + azure tertiary
+$primary-palette: mat.$rose-palette;
+$tertiary-palette: mat.$azure-palette;
 
 // ─── Light theme (default) ───────────────────────────────
 html {
@@ -103,15 +104,15 @@ mat-form-field.full-width { width: 100%; }
 // ─── Dark-mode overrides for hardcoded colours ───────────
 // Badge colours use hardcoded hex — override for dark
 html.dark-mode {
-  // Status badges
-  .badge--active    { background: #1a3a5c; color: #90caf9; }
-  .badge--completed { background: #1b3a2a; color: #a5d6a7; }
-  .badge--overdue   { background: #4a1a1a; color: #ef9a9a; }
-  .badge--paused    { background: #2a2a2a; color: #bdbdbd; }
+  // Status badges — pastel-toned for dark surfaces
+  .badge--active    { background: #1a2f4a; color: #93c5fd; }
+  .badge--completed { background: #1a3028; color: #86efac; }
+  .badge--overdue   { background: #3a1a1f; color: #fca5a5; }
+  .badge--paused    { background: #262626; color: #d4d4d4; }
 
   // Stat card success icon background
   .stat-card__icon-wrap--success {
-    background: #1b3a2a;
-    mat-icon { color: #a5d6a7; }
+    background: #1a3028;
+    mat-icon { color: #86efac; }
   }
 }

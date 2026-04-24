@@ -126,7 +126,7 @@
             <ul class="chart-legend" aria-label="Chart legend">
               @for (checklist of summary.checklists; track checklist.id; let i = $index) {
                 <li class="legend-item">
-                  <span class="legend-dot" [style.background]="['#7c3aed','#06b6d4','#10b981','#f59e0b','#ef4444','#8b5cf6'][i % 6]" aria-hidden="true"></span>
+                  <span class="legend-dot" [style.background]="['#f9a8d4','#93c5fd','#86efac','#fde68a','#c4b5fd','#99f6e4'][i % 6]" aria-hidden="true"></span>
                   <span class="legend-name">{{ checklist.name }}</span>
                   <span class="legend-value">{{ checklist.completionRate }}%</span>
                 </li>
