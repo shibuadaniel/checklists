@@ -22,7 +22,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [authGuard],
+    // canActivate: [authGuard], // re-enable once Supabase users are set up
     loadComponent: () =>
       import('./features/dashboard/dashboard.component').then(
         m => m.DashboardComponent,

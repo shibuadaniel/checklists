@@ -1,0 +1,183 @@
+<div class="dashboard-shell">
+
+  <!-- Top nav -->
+  <header class="top-nav" role="banner">
+    <div class="top-nav__brand">
+      <mat-icon aria-hidden="true">check_circle</mat-icon>
+      <span>ChekLists</span>
+    </div>
+    <div class="top-nav__actions">
+      <span class="top-nav__user" aria-label="Signed in as {{ userName }}">{{ userName }}</span>
+      <button mat-icon-button aria-label="Account menu" matTooltip="Account">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+    </div>
+  </header>
+
+  <main class="dashboard-main" id="main-content" tabindex="-1">
+
+    <!-- ── LOADING STATE ── -->
+    @if (state() === 'loading') {
+      <div class="state-center" role="status" aria-live="polite" aria-label="Loading dashboard">
+        <mat-spinner diameter="48" aria-hidden="true" />
+        <p class="state-label">Loading your dashboard…</p>
+      </div>
+    }
+
+    <!-- ── ERROR STATE ── -->
+    @if (state() === 'error') {
+      <div class="state-center" role="alert">
+        <mat-icon class="state-icon state-icon--error" aria-hidden="true">error_outline</mat-icon>
+        <p class="state-label">{{ errorMessage() }}</p>
+        <button mat-flat-button (click)="loadDashboard()">
+          <mat-icon>refresh</mat-icon>
+          Retry
+        </button>
+      </div>
+    }
+
+    <!-- ── EMPTY STATE ── -->
+    @if (state() === 'empty') {
+      <div class="state-center">
+        <mat-icon class="state-icon state-icon--empty" aria-hidden="true">playlist_add_check</mat-icon>
+        <h2 class="state-heading">No checklists yet</h2>
+        <p class="state-label">Create your first checklist to start tracking task completion.</p>
+        <button mat-flat-button (click)="createChecklist()">
+          <mat-icon>add</mat-icon>
+          Create checklist
+        </button>
+      </div>
+    }
+
+    <!-- ── SUCCESS STATE ── -->
+    @if (state() === 'success' && data(); as summary) {
+
+      <div class="dashboard-content">
+
+        <!-- Page header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Welcome back, {{ userName }}</p>
+          </div>
+          <button mat-flat-button (click)="createChecklist()" aria-label="Create a new checklist">
+            <mat-icon>add</mat-icon>
+            New checklist
+          </button>
+        </div>
+
+        <!-- Stat cards -->
+        <section class="stat-grid" aria-label="Summary statistics">
+          <app-stat-card
+            label="Active checklists"
+            [value]="summary.totalActive"
+            icon="assignment"
+            accent="primary"
+          />
+          <app-stat-card
+            label="Completed today"
+            [value]="summary.completedToday"
+            icon="task_alt"
+            accent="success"
+          />
+          <app-stat-card
+            label="Overdue"
+            [value]="summary.overdue"
+            icon="warning_amber"
+            [accent]="summary.overdue > 0 ? 'warn' : 'neutral'"
+          />
+          <app-stat-card
+            label="Avg completion"
+            [value]="summary.avgCompletionRate + '%'"
+            icon="donut_large"
+            accent="primary"
+            sublabel="across all active"
+          />
+        </section>
+
+        <!-- Chart + checklist grid -->
+        <div class="content-grid">
+
+          <!-- Donut chart card -->
+          <section class="chart-card" aria-label="Completion rate chart">
+            <h2 class="card-title">Completion rates</h2>
+            <div class="chart-wrap" role="img" aria-label="Doughnut chart showing completion percentage per active checklist">
+              <canvas baseChart
+                type="doughnut"
+                [data]="donutData"
+                [options]="donutOptions"
+              ></canvas>
+              <div class="chart-center-label" aria-hidden="true">
+                <span class="chart-big">{{ summary.avgCompletionRate }}%</span>
+                <span class="chart-small">avg</span>
+              </div>
+            </div>
+
+            <!-- Legend -->
+            <ul class="chart-legend" aria-label="Chart legend">
+              @for (checklist of summary.checklists; track checklist.id; let i = $index) {
+                <li class="legend-item">
+                  <span class="legend-dot" [style.background]="['#7c3aed','#06b6d4','#10b981','#f59e0b','#ef4444','#8b5cf6'][i % 6]" aria-hidden="true"></span>
+                  <span class="legend-name">{{ checklist.name }}</span>
+                  <span class="legend-value">{{ checklist.completionRate }}%</span>
+                </li>
+              }
+            </ul>
+          </section>
+
+          <!-- Checklist list -->
+          <section class="checklist-list" aria-label="Active checklists">
+            <h2 class="card-title">All checklists</h2>
+
+            <ul class="checklist-items" role="list">
+              @for (checklist of summary.checklists; track checklist.id) {
+                <li
+                  class="checklist-item"
+                  matRipple
+                  role="button"
+                  tabindex="0"
+                  [attr.aria-label]="checklist.name + ', ' + checklist.completionRate + '% complete'"
+                  (click)="navigateToChecklist(checklist.id)"
+                  (keydown.enter)="navigateToChecklist(checklist.id)"
+                  (keydown.space)="navigateToChecklist(checklist.id)"
+                >
+                  <div class="checklist-item__header">
+                    <span class="checklist-item__name">{{ checklist.name }}</span>
+                    <app-status-badge [status]="checklist.status" />
+                  </div>
+
+                  <div class="checklist-item__meta">
+                    <span>{{ checklist.completedTasks }}/{{ checklist.totalTasks }} tasks</span>
+                    <span class="meta-dot" aria-hidden="true">·</span>
+                    <span>{{ checklist.recurrence | titlecase }}</span>
+                    @if (checklist.dueDate) {
+                      <span class="meta-dot" aria-hidden="true">·</span>
+                      <span [class.overdue-text]="isOverdue(checklist.dueDate) && checklist.status !== 'completed'">
+                        Due {{ checklist.dueDate | date: 'MMM d' }}
+                      </span>
+                    }
+                  </div>
+
+                  <div class="checklist-item__progress">
+                    <mat-progress-bar
+                      mode="determinate"
+                      [value]="checklist.completionRate"
+                      [color]="checklist.status === 'overdue' ? 'warn' : 'primary'"
+                      [attr.aria-valuenow]="checklist.completionRate"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      [attr.aria-label]="checklist.completionRate + '% complete'"
+                    />
+                    <span class="progress-pct" aria-hidden="true">{{ checklist.completionRate }}%</span>
+                  </div>
+                </li>
+              }
+            </ul>
+          </section>
+
+        </div>
+      </div>
+    }
+
+  </main>
+</div>

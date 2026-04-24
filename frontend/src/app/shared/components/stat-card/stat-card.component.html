@@ -1,0 +1,12 @@
+<div class="stat-card" [class]="'stat-card--' + accent()">
+  <div class="stat-card__icon-wrap" [class]="'stat-card__icon-wrap--' + accent()">
+    <mat-icon [attr.aria-hidden]="true">{{ icon() }}</mat-icon>
+  </div>
+  <div class="stat-card__body">
+    <span class="stat-card__value" aria-live="polite">{{ value() }}</span>
+    <span class="stat-card__label">{{ label() }}</span>
+    @if (sublabel()) {
+      <span class="stat-card__sublabel">{{ sublabel() }}</span>
+    }
+  </div>
+</div>
