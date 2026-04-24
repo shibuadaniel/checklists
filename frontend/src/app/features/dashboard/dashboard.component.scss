@@ -206,18 +206,20 @@ $bp-lg: 1024px;
 // Desktop : 4 columns, wider cards
 .stat-grid {
   display: grid;
-  gap: 10px;
 
-  // Mobile: 2 cols
+  // Mobile: 2 cols, fixed row height → all 4 cards identical size
   grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 76px;
+  gap: 8px;
 
-  // Tablet: 4 cols
+  // Tablet: 4 cols in a single row — naturally same height
   @media (min-width: $bp-md) {
     grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: auto;
     gap: 14px;
   }
 
-  // Desktop: 4 cols, larger gap
+  // Desktop: same 4-col, wider gap
   @media (min-width: $bp-lg) {
     gap: 16px;
   }
@@ -472,6 +474,15 @@ $bp-lg: 1024px;
 .overdue-text {
   color: var(--mat-sys-error);
   font-weight: 600;
+}
+
+// ─── Dark mode adjustments ───────────────────────────────
+// Only hardcoded colours that don't invert automatically need overriding
+:host-context(html.dark-mode) {
+  .checklist-item:hover,
+  .checklist-item:focus-visible {
+    background: var(--mat-sys-surface-variant);
+  }
 }
 
 .progress-pct {

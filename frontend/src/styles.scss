@@ -1,47 +1,73 @@
 @use '@angular/material' as mat;
 
 // ─────────────────────────────────────────────────────────
-// Breakpoint system (mobile-first)
-//
-//  Mobile  : default   (320px+)  — no @media wrapper
-//  Tablet  : $bp-md    (768px+)
-//  Desktop : $bp-lg    (1024px+)
-//
-// Usage:
-//   @media (min-width: $bp-md) { ... }
-//   @media (min-width: $bp-lg) { ... }
+// Breakpoints (mobile-first)
+//   Mobile  : default (320px+)
+//   Tablet  : $bp-md  (768px+)
+//   Desktop : $bp-lg  (1024px+)
 // ─────────────────────────────────────────────────────────
 $bp-md: 768px;
 $bp-lg: 1024px;
 
-// Expose as CSS custom properties for use in component SCSS
-:root {
-  --bp-md: #{$bp-md};
-  --bp-lg: #{$bp-lg};
-}
+// ─── Shared palette ──────────────────────────────────────
+$primary-palette: mat.$violet-palette;
+$tertiary-palette: mat.$cyan-palette;
 
+// ─── Light theme (default) ───────────────────────────────
 html {
   height: 100%;
-  @include mat.theme(
-    (
+  color-scheme: light;
+
+  @include mat.theme((
+    color: (
+      primary: $primary-palette,
+      tertiary: $tertiary-palette,
+      theme-type: light,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+// ─── Dark theme ──────────────────────────────────────────
+// Block 1: system preference (only when user hasn't manually set light)
+@media (prefers-color-scheme: dark) {
+  html:not(.light-mode) {
+    color-scheme: dark;
+
+    @include mat.theme((
       color: (
-        primary: mat.$violet-palette,
-        tertiary: mat.$cyan-palette,
+        primary: $primary-palette,
+        tertiary: $tertiary-palette,
+        theme-type: dark,
       ),
       typography: Roboto,
       density: 0,
-    )
-  );
+    ));
+  }
 }
 
+// Block 2: explicit dark class (user toggled dark manually)
+html.dark-mode {
+  color-scheme: dark;
+
+  @include mat.theme((
+    color: (
+      primary: $primary-palette,
+      tertiary: $tertiary-palette,
+      theme-type: dark,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+// ─── Base reset ──────────────────────────────────────────
 *,
 *::before,
-*::after {
-  box-sizing: border-box;
-}
+*::after { box-sizing: border-box; }
 
 body {
-  color-scheme: light;
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
@@ -49,14 +75,15 @@ body {
   height: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
-// ─── Global utilities ───────────────────────────────────
+// ─── Global utilities ────────────────────────────────────
 .full-width { width: 100%; }
 
 mat-form-field.full-width { width: 100%; }
 
-// ─── Skip-to-content link (accessibility) ───────────────
+// ─── Skip-to-content (accessibility) ────────────────────
 .skip-link {
   position: absolute;
   top: -100%;
@@ -70,7 +97,21 @@ mat-form-field.full-width { width: 100%; }
   z-index: 9999;
   text-decoration: none;
 
-  &:focus {
-    top: 8px;
+  &:focus { top: 8px; }
+}
+
+// ─── Dark-mode overrides for hardcoded colours ───────────
+// Badge colours use hardcoded hex — override for dark
+html.dark-mode {
+  // Status badges
+  .badge--active    { background: #1a3a5c; color: #90caf9; }
+  .badge--completed { background: #1b3a2a; color: #a5d6a7; }
+  .badge--overdue   { background: #4a1a1a; color: #ef9a9a; }
+  .badge--paused    { background: #2a2a2a; color: #bdbdbd; }
+
+  // Stat card success icon background
+  .stat-card__icon-wrap--success {
+    background: #1b3a2a;
+    mat-icon { color: #a5d6a7; }
   }
 }

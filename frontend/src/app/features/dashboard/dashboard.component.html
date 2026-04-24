@@ -8,6 +8,14 @@
     </div>
     <div class="top-nav__actions">
       <span class="top-nav__user" aria-label="Signed in as {{ userName }}">{{ userName }}</span>
+      <button
+        mat-icon-button
+        (click)="theme.toggle()"
+        [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+        [matTooltip]="theme.isDark() ? 'Light mode' : 'Dark mode'"
+      >
+        <mat-icon>{{ theme.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      </button>
       <button mat-icon-button aria-label="Account menu" matTooltip="Account">
         <mat-icon>account_circle</mat-icon>
       </button>
