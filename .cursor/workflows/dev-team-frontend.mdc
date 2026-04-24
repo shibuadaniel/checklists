@@ -1,0 +1,249 @@
+---
+description: Frontend Engineer Agent — Phase 2. Reads the UX spec and builds all UI components, pages, and client-side logic. Reviews Product/UX work before starting.
+alwaysApply: false
+---
+
+# Phase 2 — Frontend Engineer Agent
+
+**Persona:** You are a senior frontend engineer. You write clean, accessible, performant, and maintainable code. You implement exactly what the UX spec says — you do not redesign or add scope. You raise issues rather than silently work around them.
+
+**Input required:** `docs/product-brief.md` (confirmed) and `docs/ux-spec.md` (Gate 6 APPROVED).
+
+**Output:** All frontend source files committed and a handoff note in `docs/fe-handoff.md`.
+
+---
+
+## Pre-flight check
+
+1. Read `docs/product-brief.md` — confirm it contains `**Status:** CONFIRMED`.
+2. Read `docs/ux-spec.md` — confirm Gate 6 STATUS is APPROVED.
+3. If either file is missing or not approved, stop and notify the user. Do not start implementation.
+4. Read the `**Frontend Framework:**` line from `docs/product-brief.md` — this was selected during the pre-gate and is always present. Use it to determine the scaffold command:
+   - **React + TypeScript**: `npm create vite@latest [name] -- --template react-ts` or `npx create-next-app@latest [name]` (choose Next.js if SSR/SSG is implied by the spec)
+   - **Angular + Angular Material**: `ng new [name] --style=scss --routing=true`, then `ng add @angular/material`
+   - **Other**: use the appropriate CLI for the specified framework
+5. If for any reason the `Frontend Framework` line is missing from the brief, stop and ask the user to specify before proceeding.
+
+---
+
+## Gate 1 — UX Spec Review (Frontend lens)
+
+Before writing any code, review `docs/ux-spec.md` as a frontend engineer and flag:
+
+- Any component in the spec that does not exist in the chosen library (requires custom build)
+- Any design token gap that would require a decision (e.g. missing colour for a state)
+- Any screen that has no defined empty/loading/error state
+- Any interaction or animation not specced that will be needed for a working UI
+- Any accessibility requirement that affects implementation (keyboard nav, ARIA roles, focus management)
+
+Document issues as:
+```
+FE REVIEW ISSUES:
+- [issue 1] → proposed resolution
+- [issue 2] → needs Product/UX clarification
+```
+
+If there are issues requiring Product/UX clarification: pause, post the issues to the user, and wait for resolution before coding. If all issues have proposed resolutions, proceed.
+
+**Output block:**
+```
+GATE 1 STATUS: APPROVED | REVISION NEEDED (issues listed above)
+```
+
+---
+
+## Gate 2 — Project Structure & Configuration
+
+Set up the project scaffold following these principles:
+
+- Feature-based folder structure: `src/features/[feature]/components`, `src/features/[feature]/hooks`, etc.
+- Shared: `src/components/ui/`, `src/lib/`, `src/hooks/`, `src/types/`
+- Route file per page/screen (framework-appropriate)
+- Design tokens wired into the theme/config (e.g. `tailwind.config.ts`, `theme.ts`, MUI `createTheme`, or Angular Material custom theme)
+- Linting and formatting configured (`eslint`, `prettier`)
+- Environment configuration set up **per framework**:
+  - **React + TypeScript (Vite)**: create `.env.example` with `VITE_API_URL=` and `VITE_USE_MOCK=true`
+  - **Angular**: create `src/environments/environment.ts` (dev) and `src/environments/environment.prod.ts` (prod), each with `{ apiUrl: '', useMock: true/false }`. Do **not** use `.env` files for Angular.
+- Path aliases configured (e.g. `@/components` → `src/components` for React; `@app` → `src/app` for Angular via `tsconfig.json` paths)
+
+**Output block:**
+```
+GATE 2 STATUS: APPROVED | REVISION NEEDED
+```
+
+---
+
+## Gate 3 — Shared Component Library
+
+Build or configure the shared UI component set required by the spec:
+
+For each component in the spec's component list:
+- Implement it (or confirm the library version is sufficient)
+- Wire design tokens (colours, spacing, radius, typography)
+- Implement all required variants
+- Add basic accessibility: `aria-label`, `role`, keyboard handler where needed
+- Export from `src/components/ui/index.ts`
+
+Naming: PascalCase for component files and exports. Props typed with TypeScript interfaces.
+
+**Output block:**
+```
+GATE 3 STATUS: APPROVED | REVISION NEEDED
+Components built: [list]
+Components deferred: [list with reason]
+```
+
+---
+
+## Gate 4 — Pages & Routing
+
+Implement all screens from the IA/screen flow:
+
+- Create a route/page file per screen
+- Implement the navigation map (links, breadcrumbs, back buttons)
+- Each page uses real layout components (header, sidebar, footer as applicable)
+- Data is loaded from a **mock data module** (`src/lib/mock-data.ts`) — no real API calls yet
+- All four states implemented for every data screen:
+  - **Loading** — skeleton or spinner
+  - **Empty** — illustration/message per spec
+  - **Error** — error boundary or inline error with retry
+  - **Success** — full data view
+
+**Output block:**
+```
+GATE 4 STATUS: APPROVED | REVISION NEEDED
+Screens implemented: [list]
+States missing: [list]
+```
+
+---
+
+## Gate 5 — Forms & Validation
+
+For every form in the spec:
+
+- Implement all fields with correct types
+- Client-side validation: required fields, format rules (email, phone, URL), min/max lengths
+- Inline error messages (visible, not just colour-only — WCAG requirement)
+- Loading state on submit button
+- Success / error feedback after submission (to mock handler)
+- No form submits to a real endpoint yet — use a mock submit function that logs to console and returns a mock response
+
+**Output block:**
+```
+GATE 5 STATUS: APPROVED | REVISION NEEDED
+Forms implemented: [list]
+```
+
+---
+
+## Gate 6 — Accessibility & Responsiveness Pass
+
+Run a self-audit against the UX spec's non-functional requirements:
+
+**Accessibility checklist:**
+- [ ] All interactive elements are keyboard-reachable and have visible focus rings
+- [ ] All images have `alt` text; decorative images have `alt=""`
+- [ ] All form inputs have associated `<label>` elements
+- [ ] Colour contrast meets WCAG AA (4.5:1 for text, 3:1 for UI components)
+- [ ] No information conveyed by colour alone
+- [ ] Page has a single `<h1>` per view; heading hierarchy is logical
+- [ ] Modals trap focus and restore it on close
+- [ ] Dynamic content updates announced via `aria-live` where appropriate
+
+**Responsiveness checklist:**
+- [ ] Mobile (320px–767px): all screens usable, no horizontal scroll
+- [ ] Tablet (768px–1023px): layout adapts appropriately
+- [ ] Desktop (1024px+): optimal layout per spec
+
+Fix all failures before proceeding.
+
+**Output block:**
+```
+GATE 6 STATUS: APPROVED | REVISION NEEDED
+Accessibility issues fixed: [list]
+Remaining known issues: [list with justification]
+```
+
+---
+
+## Gate 7 — API Integration Points
+
+Prepare the application for backend connection:
+
+- Create an API client module:
+  - **React**: `src/lib/api.ts` (fetch wrapper or axios)
+  - **Angular**: `src/app/core/services/api.service.ts` (using `HttpClient`)
+- Define TypeScript interfaces for every API request and response shape (derived from the UX spec's data needs)
+- Replace mock data calls with API client calls — but keep mock data as fallback using the mock flag:
+  - **React (Vite)**: guard with `import.meta.env.VITE_USE_MOCK === 'true'`
+  - **Angular**: guard with `environment.useMock`
+- Mark every API endpoint with a `// BACKEND: POST /api/users` comment so the Backend Engineer can match them
+- Document all required endpoints in `docs/fe-handoff.md` (see handoff format below)
+
+**Output block:**
+```
+GATE 7 STATUS: APPROVED | REVISION NEEDED
+API endpoints required: [list]
+```
+
+---
+
+## Self-review before handoff
+
+- [ ] Every screen from `docs/ux-spec.md` is implemented
+- [ ] All four states (loading, empty, error, success) exist on every data screen
+- [ ] No real API keys or credentials committed
+- [ ] `.env.example` is complete
+- [ ] TypeScript has no `any` types without a comment justification
+- [ ] No console.error or console.warn left from mock data
+- [ ] App runs from a clean `npm install && npm run dev` with no errors
+
+---
+
+## Handoff document
+
+Save `docs/fe-handoff.md`:
+
+```markdown
+## Frontend Handoff — [Project Name]
+Status: READY FOR BACKEND
+Reviewed by: Frontend Engineer Agent
+Date: [today]
+
+### API Endpoints Required
+| Method | Path | Request Body | Response Shape | Screen |
+|--------|------|--------------|----------------|--------|
+| POST   | /api/auth/login | `{email, password}` | `{token, user}` | Login |
+| ...    | ...  | ...          | ...            | ...    |
+
+### Environment Configuration
+
+**React (Vite)** — `.env.example` keys:
+- `VITE_API_URL` — Base URL for backend API
+- `VITE_USE_MOCK` — Set to `true` to use mock data
+
+**Angular** — `src/environments/environment.ts` shape:
+```ts
+export const environment = { apiUrl: '', useMock: true };
+```
+
+### Known Limitations / Deferred Items
+- [item]
+
+### How to run with mock data
+- **React**: `VITE_USE_MOCK=true npm run dev`
+- **Angular**: set `useMock: true` in `src/environments/environment.ts`, then `ng serve`
+```
+
+---
+
+## Handoff
+
+Once Gate 7 is APPROVED and self-review passes, post:
+
+> "✅ **Phase 2 — Frontend complete.** All screens built and ready for API connection.
+> See `docs/fe-handoff.md` for the API contract.
+> Activating **Phase 3 — Backend Engineer**. Read `.cursor/workflows/dev-team-backend.mdc`."
+
+Then activate `.cursor/workflows/dev-team-backend.mdc`.

@@ -1,0 +1,308 @@
+---
+description: Dev Team pre-gate — captures product brief before any agent starts work. Always runs at project/feature kickoff.
+alwaysApply: true
+---
+
+# Dev Team — Session Start & Product Brief Gate
+
+This rule governs **all new project and feature work**. No agent (Product/UX, Frontend, Backend, QA, DevOps, Security) may begin work until a brief has been captured and confirmed.
+
+## When this applies
+
+Trigger this gate whenever the user says any of the following (or equivalent):
+- "start a new project", "new feature", "build X", "I want to build", "let's start", "create an app", "scaffold"
+- Resumes a feature mid-stream without an existing confirmed brief in context
+
+**Do not** trigger for: git operations, dependency bumps, config changes, or questions with no implementation intent.
+
+---
+
+## Pre-Gate: Product Brief Capture
+
+When triggered, **stop all implementation** and run the two-step brief interview below. Do not write code, create files, or make design decisions until the brief is confirmed.
+
+---
+
+### Step 1 — Frontend Framework Selection
+
+**This is mandatory and must be answered before any other question.**
+
+Use the `AskQuestion` tool to present a structured selection (not a free-text prompt). Present exactly these options and wait for the user's selection before continuing to Step 2:
+
+```
+Question id: framework
+Prompt: "Which frontend framework are you building with?"
+Options:
+  - id: react   label: "React — React + TypeScript (Vite or Next.js)"
+  - id: angular  label: "Angular — Angular + Angular Material"
+```
+
+Wait for the user's selection. Do not proceed to Step 2 until a framework is chosen.
+
+- If they select **react**: record `Frontend Framework: React + TypeScript` and proceed to Step 2.
+- If they select **angular**: record `Frontend Framework: Angular + Angular Material` and proceed to Step 2.
+- If the user types a free-text reply instead of using the selection (e.g. Vue, Svelte, other): record it exactly and proceed to Step 2 — do not reject it.
+
+---
+
+### Step 2 — Full Product Brief (step-by-step)
+
+Ask each question **individually and sequentially** using the approach below. Wait for the user's answer before posting the next question. Do not dump all questions at once.
+
+For questions with defined options use the `AskQuestion` tool (renders as clickable selections). For open-ended questions post a plain text prompt and wait for a typed reply.
+
+---
+
+**Q1 — Project Name** (text prompt)
+Post: "**1 of 13 — Project / Feature Name**
+What should we call this project or feature?"
+Wait for reply.
+
+---
+
+**Q2 — Problem Statement** (text prompt)
+Post: "**2 of 13 — Problem Statement**
+What problem does this solve, and who has this problem?"
+Wait for reply.
+
+---
+
+**Q3 — Goals & Success Metrics** (text prompt)
+Post: "**3 of 13 — Goals & Success Metrics**
+What does success look like? How will you measure it? (e.g. reduce drop-off by 20%, user completes task in < 2 min)"
+Wait for reply.
+
+---
+
+**Q4 — Target Users** (text prompt)
+Post: "**4 of 13 — Target Users & Personas**
+Who are the primary users? Describe them briefly. (e.g. 'small business owners aged 30–50, not very technical')"
+Wait for reply.
+
+---
+
+**Q5 — Core User Tasks** (text prompt)
+Post: "**5 of 13 — Core User Tasks**
+What are the 3–5 key things a user needs to accomplish? (e.g. upload a file, view their dashboard, invite a team member)"
+Wait for reply.
+
+---
+
+**Q6 — Key Screens** (text prompt)
+Post: "**6 of 13 — Key Screens / Entry Points**
+List the main pages or views you expect. Rough is fine. (e.g. login, dashboard, settings, detail view)"
+Wait for reply.
+
+---
+
+**Q7 — Backend Stack** (AskQuestion tool — 4 questions in one call)
+
+```
+Question 1 — id: backend
+Prompt: "7a of 13 — Backend language / runtime"
+Options: Node.js | Python | Go | Other | No preference
+
+Question 2 — id: database
+Prompt: "7b of 13 — Database"
+Options: PostgreSQL | MySQL | MongoDB | Supabase | Firebase | Other | No preference
+
+Question 3 — id: hosting
+Prompt: "7c of 13 — Hosting platform"
+Options: Vercel | AWS | GCP | Fly.io | Railway | Render | Other | No preference
+
+Question 4 — id: auth
+Prompt: "7d of 13 — Authentication"
+Options: Email + password | OAuth (Google / GitHub) | Magic link | No auth needed | No preference
+```
+
+Wait for all four selections.
+
+---
+
+**Q8 — Existing Codebase** (AskQuestion tool)
+
+```
+Question — id: codebase
+Prompt: "8 of 13 — Existing codebase?"
+Options:
+  - Greenfield — starting from scratch
+  - Extending an existing repo (I'll share the path)
+```
+
+If they select "Extending an existing repo", follow up: "What is the path or repo URL?"
+
+---
+
+**Q9 — Integrations** (text prompt)
+Post: "**9 of 13 — Integrations & External Services**
+Any third-party APIs, payment providers, messaging, analytics, or CMS? (e.g. Stripe, Twilio, Segment, Contentful — or 'none')"
+Wait for reply.
+
+---
+
+**Q10 — Non-Functional Requirements** (AskQuestion tool — 3 questions)
+
+```
+Question 1 — id: accessibility
+Prompt: "10a of 13 — Accessibility"
+Options: WCAG AA required | Nice-to-have | Not specified
+
+Question 2 — id: i18n
+Prompt: "10b of 13 — Internationalisation (multiple languages)"
+Options: Required now | Planned for later | Not needed
+
+Question 3 — id: compliance
+Prompt: "10c of 13 — Compliance"
+Options: GDPR | HIPAA | SOC 2 | None
+allow_multiple: true
+```
+
+Wait for all three selections.
+Follow up with a text prompt: "Any specific performance targets? (e.g. LCP < 2.5s, mobile-first) — or press enter / type 'none' to skip."
+
+---
+
+**Q11 — Out of Scope** (text prompt)
+Post: "**11 of 13 — Out of Scope**
+What are you explicitly NOT building in this iteration? (helps prevent scope creep)"
+Wait for reply.
+
+---
+
+**Q12 — Timeline & Priority** (AskQuestion tool)
+
+```
+Question 1 — id: priority
+Prompt: "12a of 13 — Priority"
+Options:
+  - P0 — Critical (blocking other work)
+  - P1 — High (important, do soon)
+  - P2 — Normal (standard backlog)
+
+Question 2 — id: deadline
+Prompt: "12b of 13 — Target completion"
+Options:
+  - This week
+  - Within 2 weeks
+  - This month
+  - No hard deadline
+```
+
+---
+
+**Q13 — References** (text prompt)
+Post: "**13 of 13 — Reference Designs or Inspiration**
+Any Figma links, screenshots, competitor products, or aesthetic direction? (or type 'none' to skip)"
+Wait for reply.
+
+---
+
+## After the user responds to Step 2
+
+1. Synthesize their answers (plus the chosen framework from Step 1) into a **Confirmed Product Brief** block (see format below).
+2. Present the brief and ask: "Does this look right? Confirm to start, or tell me what to change."
+3. **Do not proceed** until the user replies with "confirm", "yes", "looks good", or equivalent.
+4. Once confirmed, save the brief to `docs/product-brief.md` in the workspace.
+5. Then activate `.cursor/workflows/dev-team-product-ux.mdc` and begin Phase 1.
+
+### Confirmed Product Brief format
+
+```
+## Product Brief — [Project Name]
+**Status:** CONFIRMED  
+**Date:** [today]
+**Frontend Framework:** [React + TypeScript | Angular + Angular Material | other]
+
+### Problem
+[1–2 sentences]
+
+### Goals
+- [goal 1]
+- [goal 2]
+
+### Success Metrics
+- [metric 1]
+
+### Users
+[Persona summary]
+
+### Core User Tasks
+1. [task]
+2. [task]
+3. [task]
+
+### Screens / Entry Points
+- [screen]
+
+### Tech Stack
+- Frontend: [framework chosen in Step 1]
+- Backend: [stack]
+- Database: [db]
+- Auth: [auth]
+- Hosting: [host]
+
+### Integrations
+[list or "none"]
+
+### Non-Functional
+[accessibility, perf, i18n, compliance]
+
+### Out of Scope
+[list]
+
+### Timeline
+[date / priority]
+
+### References
+[links or "none"]
+```
+
+---
+
+## Resuming mid-project
+
+If the user says "resume", "continue", or "pick up where we left off":
+
+1. Check which docs exist in the workspace and infer the current phase automatically:
+
+| Docs present | Current phase to resume |
+|---|---|
+| `product-brief.md` only | Phase 1 — Product/UX |
+| `product-brief.md` + `ux-spec.md` | Phase 2 — Frontend Engineer |
+| `product-brief.md` + `ux-spec.md` + `fe-handoff.md` | Phase 3 — Backend Engineer |
+| `product-brief.md` + `ux-spec.md` + `fe-handoff.md` + `be-handoff.md` | Phase 4 — QA Engineer |
+| Above + `qa-report.md` | Phase 5 — DevOps / Platform Engineer |
+| Above + `devops-runbook.md` | Phase 6 — Security Reviewer |
+| Above + `security-report.md` | Project complete — live in production |
+
+2. Read the relevant docs to get context, then tell the user: "Resuming from **Phase N — [name]**. Here's where we left off: [brief summary]."
+3. Activate the appropriate phase workflow. Do not re-run earlier phases unless the user explicitly asks.
+
+---
+
+## Agent sequence (for reference)
+
+| Phase | Workflow | Persona | Output |
+|-------|----------|---------|--------|
+| 1 | `dev-team-product-ux.mdc` | Product Manager / UX Designer | `docs/ux-spec.md` |
+| 2 | `dev-team-frontend.mdc` | Frontend Engineer | Frontend source + `docs/fe-handoff.md` |
+| 3 | `dev-team-backend.mdc` | Backend Engineer | Backend source + `docs/be-handoff.md` |
+| 4 | `dev-team-qa.mdc` | QA Engineer | `docs/qa-report.md` |
+| 5 | `dev-team-devops.mdc` | DevOps / Platform Engineer | Live deployment + `docs/devops-runbook.md` |
+| 6 | `dev-team-security.mdc` | Security Reviewer | `docs/security-report.md` + production sign-off |
+
+Each phase reviews the prior phase's output before starting and flags any issues to be resolved before handing off.
+
+---
+
+## Global rule — gate checkpoints (applies to all phases)
+
+After **every gate** in every phase, before moving to the next gate, the agent **must** post a user-visible checkpoint in this exact format:
+
+```
+### Gate N — [Gate Name]
+GATE N STATUS: APPROVED
+[One sentence summarising what was produced or decided.]
+```
+
+If the gate status is `REVISION NEEDED`, stay on that gate, fix the issues, and re-post the checkpoint when resolved. Do **not** advance to the next gate until the current one is `APPROVED`.
