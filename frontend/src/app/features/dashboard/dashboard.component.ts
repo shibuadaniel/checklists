@@ -9,13 +9,6 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartData, ChartOptions } from 'chart.js';
-import {
-  Chart,
-  ArcElement,
-  DoughnutController,
-  Tooltip,
-  Legend,
-} from 'chart.js';
 
 import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
@@ -24,8 +17,6 @@ import { ThemeService } from '../../core/services/theme.service';
 import { DashboardSummary, Checklist } from '../../core/models/checklist.model';
 import { MOCK_DASHBOARD } from '../../core/mock-data/dashboard.mock';
 import { environment } from '../../../environments/environment.development';
-
-Chart.register(ArcElement, DoughnutController, Tooltip, Legend);
 
 type PageState = 'loading' | 'empty' | 'error' | 'success';
 
