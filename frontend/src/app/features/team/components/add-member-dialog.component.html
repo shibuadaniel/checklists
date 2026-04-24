@@ -1,0 +1,49 @@
+<h2 mat-dialog-title class="dialog-title">
+  <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+  Invite team member
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <p class="dialog-desc">They'll receive an email to set their password and join the team.</p>
+
+  <form [formGroup]="form" novalidate class="invite-form">
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Full name</mat-label>
+      <input matInput formControlName="name" placeholder="Jane Smith" autocomplete="off" />
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <mat-error>{{ nameError }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email address</mat-label>
+      <input matInput type="email" formControlName="email" placeholder="jane@company.com" autocomplete="off" />
+      @if (form.controls.email.invalid && form.controls.email.touched) {
+        <mat-error>{{ emailError }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Role</mat-label>
+      <mat-select formControlName="role">
+        @for (role of allRoles; track role) {
+          <mat-option [value]="role">{{ roleLabels[role] }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button (click)="cancel()" [disabled]="sending">Cancel</button>
+  <button mat-flat-button (click)="send()" [disabled]="sending" class="send-btn">
+    @if (sending) {
+      <mat-spinner diameter="16" />
+    } @else {
+      <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+    }
+    Send invite
+  </button>
+</mat-dialog-actions>

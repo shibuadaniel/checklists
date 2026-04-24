@@ -1,0 +1,285 @@
+$bp-md: 768px;
+$bp-lg: 1024px;
+
+// ── Layout shell ─────────────────────────────────────────
+.layout-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--mat-sys-surface-variant);
+}
+
+main {
+  flex: 1;
+  overflow-y: auto;
+}
+
+// ── Top Nav ──────────────────────────────────────────────
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 52px;
+  background: var(--mat-sys-surface);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+
+  @media (min-width: $bp-md) {
+    height: 56px;
+    padding: 0 24px;
+  }
+
+  @media (min-width: $bp-lg) {
+    height: 60px;
+    padding: 0 32px;
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--mat-sys-primary);
+    text-decoration: none;
+
+    @media (min-width: $bp-lg) { font-size: 19px; }
+  }
+
+  &__logo-icon {
+    font-size: 22px;
+    color: var(--mat-sys-primary);
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    margin-right: -8px;
+  }
+}
+
+// Nav icon buttons (Font Awesome, consistent 20px)
+.nav-icon-btn i {
+  font-size: 20px;
+  color: var(--mat-sys-on-surface-variant);
+  transition: color 150ms ease;
+}
+
+.nav-icon-btn:hover i,
+.nav-icon-btn:focus-visible i {
+  color: var(--mat-sys-primary);
+}
+
+// ── Drawer ───────────────────────────────────────────────
+.app-drawer {
+  width: 300px;
+  background: var(--mat-sys-surface);
+  border-left: 1px solid var(--mat-sys-outline-variant);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+
+  @media (min-width: $bp-md) { width: 320px; }
+}
+
+// ── Drawer user section ──────────────────────────────────
+.drawer-user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 20px 20px;
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__email {
+    font-size: 12px;
+    color: var(--mat-sys-on-surface-variant);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__role {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--mat-sys-primary);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+}
+
+// ── Drawer nav links ─────────────────────────────────────
+.drawer-nav {
+  padding: 8px 0;
+
+  &__item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface);
+    text-align: left;
+    transition: background 150ms ease;
+    border-radius: 0;
+
+    i {
+      font-size: 16px;
+      width: 18px;
+      color: var(--mat-sys-on-surface-variant);
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: var(--mat-sys-surface-variant);
+
+      i { color: var(--mat-sys-primary); }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--mat-sys-primary);
+      outline-offset: -2px;
+    }
+  }
+}
+
+// ── Drawer section (theme) ───────────────────────────────
+.drawer-section {
+  padding: 16px 20px;
+
+  &__label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--mat-sys-on-surface-variant);
+    margin-bottom: 10px;
+  }
+}
+
+.drawer-toggle-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0;
+  border-radius: 8px;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface);
+
+    i {
+      font-size: 16px;
+      width: 18px;
+      color: var(--mat-sys-on-surface-variant);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: 2px;
+  }
+}
+
+// Theme toggle pill
+.theme-pill {
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--mat-sys-outline-variant);
+  position: relative;
+  transition: background 200ms ease;
+  flex-shrink: 0;
+
+  &--dark {
+    background: var(--mat-sys-primary);
+  }
+
+  &__knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    transition: transform 200ms ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+
+    .theme-pill--dark & {
+      transform: translateX(18px);
+    }
+  }
+}
+
+// ── Drawer footer (sign out) ─────────────────────────────
+.drawer-footer {
+  padding: 12px 20px 32px;
+  margin-top: auto;
+}
+
+.drawer-signout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mat-sys-error);
+  padding: 10px 0;
+  border-radius: 8px;
+  width: 100%;
+
+  i {
+    font-size: 16px;
+    width: 18px;
+  }
+
+  &:hover { opacity: 0.75; }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-error);
+    outline-offset: 2px;
+  }
+}

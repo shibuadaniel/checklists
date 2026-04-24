@@ -3,6 +3,8 @@ import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+
+  // Public auth routes
   {
     path: 'auth',
     children: [
@@ -20,13 +22,30 @@ export const routes: Routes = [
       },
     ],
   },
+
+  // Authenticated routes — all share the AppLayout shell (nav + hamburger)
   {
-    path: 'dashboard',
-    // canActivate: [authGuard], // re-enable once Supabase users are set up
+    path: '',
     loadComponent: () =>
-      import('./features/dashboard/dashboard.component').then(
-        m => m.DashboardComponent,
+      import('./layouts/app-layout/app-layout.component').then(
+        m => m.AppLayoutComponent,
       ),
+    // canActivate: [authGuard], // re-enable once Supabase users are set up
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard.component').then(
+            m => m.DashboardComponent,
+          ),
+      },
+      {
+        path: 'team',
+        loadComponent: () =>
+          import('./features/team/team.component').then(m => m.TeamComponent),
+      },
+    ],
   },
+
   { path: '**', redirectTo: 'auth/login' },
 ];

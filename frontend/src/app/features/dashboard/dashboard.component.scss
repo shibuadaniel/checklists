@@ -61,19 +61,19 @@ $bp-lg: 1024px;
   &__actions {
     display: flex;
     align-items: center;
-    gap: 4px;
+    margin-right: -8px;
   }
 
-  // Match FA icon to Material icon size (24px) inside mat-icon-button
+  // All nav icons use Font Awesome — uniform size, no overrides needed
   .nav-icon-btn i {
-    font-size: 24px;
-    line-height: 1;
-    color: var(--mat-sys-primary);
+    font-size: 20px;
+    color: var(--mat-sys-on-surface-variant);
     transition: color 150ms ease;
   }
 
-  .nav-icon-btn:hover i {
-    color: var(--mat-sys-on-surface);
+  .nav-icon-btn:hover i,
+  .nav-icon-btn:focus-visible i {
+    color: var(--mat-sys-primary);
   }
 
   // Mobile: user name hidden — saves horizontal space

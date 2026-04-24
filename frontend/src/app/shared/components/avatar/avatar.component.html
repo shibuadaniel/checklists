@@ -1,0 +1,19 @@
+<div class="avatar" [class]="'avatar--' + size()" [class.avatar--editable]="editable()">
+  @if (photoUrl()) {
+    <img [src]="photoUrl()!" [alt]="name() + ' avatar'" class="avatar__img" />
+  } @else {
+    <span class="avatar__initials" aria-hidden="true">{{ initials }}</span>
+  }
+
+  @if (editable()) {
+    <label class="avatar__edit-overlay" [attr.aria-label]="'Change profile photo for ' + name()">
+      <i class="fa-solid fa-camera" aria-hidden="true"></i>
+      <input
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        class="avatar__file-input"
+        (change)="onFileSelected($event)"
+      />
+    </label>
+  }
+</div>

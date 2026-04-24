@@ -1,37 +1,5 @@
 <div class="dashboard-shell">
-
-  <!-- Top nav -->
-  <header class="top-nav" role="banner">
-    <div class="top-nav__brand">
-      <mat-icon aria-hidden="true">check_circle</mat-icon>
-      <span>ChekLists</span>
-    </div>
-    <div class="top-nav__actions">
-      <span class="top-nav__user" aria-label="Signed in as {{ userName }}">{{ userName }}</span>
-      <button
-        mat-icon-button
-        (click)="createChecklist()"
-        aria-label="Create new checklist"
-        matTooltip="New checklist"
-        class="nav-icon-btn"
-      >
-        <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
-      </button>
-      <button
-        mat-icon-button
-        (click)="theme.toggle()"
-        [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
-        [matTooltip]="theme.isDark() ? 'Light mode' : 'Dark mode'"
-      >
-        <mat-icon>{{ theme.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
-      </button>
-      <button mat-icon-button aria-label="Account menu" matTooltip="Account">
-        <mat-icon>account_circle</mat-icon>
-      </button>
-    </div>
-  </header>
-
-  <main class="dashboard-main" id="main-content" tabindex="-1">
+  <div class="dashboard-main">
 
     <!-- ── LOADING STATE ── -->
     @if (state() === 'loading') {
@@ -194,5 +162,5 @@
       </div>
     }
 
-  </main>
+  </div>
 </div>

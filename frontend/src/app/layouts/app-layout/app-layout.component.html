@@ -1,0 +1,105 @@
+<mat-drawer-container class="layout-container" autosize>
+
+  <!-- ── Right-side hamburger drawer ── -->
+  <mat-drawer #drawer mode="over" position="end" class="app-drawer">
+
+    <!-- User section -->
+    <div class="drawer-user">
+      <app-avatar
+        [name]="userName"
+        [photoUrl]="avatarUrl()"
+        size="lg"
+        [editable]="true"
+        (photoChange)="onAvatarChange($event)"
+      />
+      <div class="drawer-user__info">
+        <span class="drawer-user__name">{{ userName }}</span>
+        <span class="drawer-user__email">{{ userEmail }}</span>
+        @if (userRole) {
+          <span class="drawer-user__role">{{ userRole }}</span>
+        }
+      </div>
+    </div>
+
+    <mat-divider />
+
+    <!-- Navigation links -->
+    <nav class="drawer-nav" aria-label="App navigation">
+      <button class="drawer-nav__item" (click)="navigateTo('/dashboard')">
+        <i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
+        <span>Dashboard</span>
+      </button>
+      <button class="drawer-nav__item" (click)="navigateTo('/team')">
+        <i class="fa-solid fa-users" aria-hidden="true"></i>
+        <span>Team</span>
+      </button>
+    </nav>
+
+    <mat-divider />
+
+    <!-- Theme toggle -->
+    <div class="drawer-section">
+      <span class="drawer-section__label">Appearance</span>
+      <button class="drawer-toggle-row" (click)="theme.toggle()" [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
+        <div class="drawer-toggle-row__left">
+          <i [class]="theme.isDark() ? 'fa-solid fa-sun' : 'fa-solid fa-moon'" aria-hidden="true"></i>
+          <span>{{ theme.isDark() ? 'Light mode' : 'Dark mode' }}</span>
+        </div>
+        <div class="theme-pill" [class.theme-pill--dark]="theme.isDark()">
+          <div class="theme-pill__knob"></div>
+        </div>
+      </button>
+    </div>
+
+    <mat-divider />
+
+    <!-- Sign out -->
+    <div class="drawer-footer">
+      <button class="drawer-signout" (click)="signOut()">
+        <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+        <span>Sign out</span>
+      </button>
+    </div>
+
+  </mat-drawer>
+
+  <!-- ── Main content ── -->
+  <mat-drawer-content class="layout-content">
+
+    <!-- Top nav -->
+    <header class="top-nav" role="banner">
+      <a routerLink="/dashboard" class="top-nav__brand" aria-label="ChekLists home">
+        <i class="fa-solid fa-circle-check top-nav__logo-icon" aria-hidden="true"></i>
+        <span>ChekLists</span>
+      </a>
+
+      <div class="top-nav__actions">
+        <button
+          mat-icon-button
+          routerLink="/checklists/new"
+          aria-label="Create new checklist"
+          matTooltip="New checklist"
+          class="nav-icon-btn"
+        >
+          <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
+        </button>
+        <button
+          mat-icon-button
+          (click)="toggleDrawer()"
+          aria-label="Open menu"
+          matTooltip="Menu"
+          class="nav-icon-btn nav-hamburger"
+        >
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <main id="main-content" tabindex="-1">
+      <router-outlet />
+    </main>
+
+  </mat-drawer-content>
+
+</mat-drawer-container>

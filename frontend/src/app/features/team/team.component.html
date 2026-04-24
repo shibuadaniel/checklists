@@ -1,0 +1,135 @@
+<div class="team-page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Team</h1>
+      <p class="page-subtitle">Manage members and their roles</p>
+    </div>
+    <button mat-flat-button (click)="openAddMember()" class="add-btn" aria-label="Invite a new team member">
+      <i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+      <span>Invite member</span>
+    </button>
+  </div>
+
+  <!-- ── LOADING ── -->
+  @if (state() === 'loading') {
+    <div class="state-center" role="status" aria-live="polite">
+      <mat-spinner diameter="44" />
+      <p class="state-label">Loading team…</p>
+    </div>
+  }
+
+  <!-- ── ERROR ── -->
+  @if (state() === 'error') {
+    <div class="state-center" role="alert">
+      <i class="fa-solid fa-circle-exclamation state-icon state-icon--error" aria-hidden="true"></i>
+      <p class="state-label">{{ errorMessage() }}</p>
+      <button mat-flat-button (click)="loadTeam()">
+        <i class="fa-solid fa-rotate-right" aria-hidden="true"></i> Retry
+      </button>
+    </div>
+  }
+
+  <!-- ── EMPTY ── -->
+  @if (state() === 'empty') {
+    <div class="state-center">
+      <i class="fa-solid fa-users state-icon state-icon--empty" aria-hidden="true"></i>
+      <h2 class="state-heading">No team members yet</h2>
+      <p class="state-label">Invite your first team member to get started.</p>
+      <button mat-flat-button (click)="openAddMember()">
+        <i class="fa-solid fa-user-plus" aria-hidden="true"></i> Invite member
+      </button>
+    </div>
+  }
+
+  <!-- ── SUCCESS — Desktop table ── -->
+  @if (state() === 'success') {
+    <div class="table-card">
+      <table mat-table [dataSource]="members()" class="team-table" aria-label="Team members">
+
+        <!-- Member column (avatar + name) -->
+        <ng-container matColumnDef="member">
+          <th mat-header-cell *matHeaderCellDef>Member</th>
+          <td mat-cell *matCellDef="let m">
+            <div class="member-cell">
+              <app-avatar [name]="m.name" [photoUrl]="m.avatarUrl ?? null" size="sm" />
+              <span class="member-name">{{ m.name }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Role column -->
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef>Role</th>
+          <td mat-cell *matCellDef="let m">
+            <span class="role-label">{{ getRoleLabel(m.role) }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Email column -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let m">
+            <span class="email-label">{{ m.email }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Status column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let m">
+            <app-status-badge-team [status]="m.status" />
+          </td>
+        </ng-container>
+
+        <!-- Actions column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let m">
+            <button
+              mat-icon-button
+              (click)="openEditRole(m)"
+              [matTooltip]="'Edit role for ' + m.name"
+              [attr.aria-label]="'Edit role for ' + m.name"
+              class="action-btn"
+            >
+              <i class="fa-solid fa-pen" aria-hidden="true"></i>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="team-row"></tr>
+      </table>
+    </div>
+
+    <!-- Mobile card list (shown below md) -->
+    <ul class="mobile-list" role="list" aria-label="Team members">
+      @for (m of members(); track m.id) {
+        <li class="mobile-card">
+          <div class="mobile-card__header">
+            <app-avatar [name]="m.name" [photoUrl]="m.avatarUrl ?? null" size="sm" />
+            <div class="mobile-card__info">
+              <span class="member-name">{{ m.name }}</span>
+              <span class="email-label">{{ m.email }}</span>
+            </div>
+            <button
+              mat-icon-button
+              (click)="openEditRole(m)"
+              [attr.aria-label]="'Edit role for ' + m.name"
+              class="action-btn"
+            >
+              <i class="fa-solid fa-pen" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="mobile-card__meta">
+            <span class="role-label">{{ getRoleLabel(m.role) }}</span>
+            <app-status-badge-team [status]="m.status" />
+          </div>
+        </li>
+      }
+    </ul>
+  }
+
+</div>

@@ -13,7 +13,6 @@ import { ChartData, ChartOptions } from 'chart.js';
 import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 import { AuthService } from '../../core/services/auth.service';
-import { ThemeService } from '../../core/services/theme.service';
 import { DashboardSummary, Checklist } from '../../core/models/checklist.model';
 import { MOCK_DASHBOARD } from '../../core/mock-data/dashboard.mock';
 import { environment } from '../../../environments/environment.development';
@@ -42,7 +41,6 @@ type PageState = 'loading' | 'empty' | 'error' | 'success';
 export class DashboardComponent implements OnInit {
   private router = inject(Router);
   private auth = inject(AuthService);
-  readonly theme = inject(ThemeService);
 
   readonly state = signal<PageState>('loading');
   readonly data = signal<DashboardSummary | null>(null);

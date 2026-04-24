@@ -1,0 +1,36 @@
+.dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+
+  i { color: var(--mat-sys-primary); font-size: 18px; }
+}
+
+.dialog-content { padding-top: 8px !important; }
+
+.dialog-desc {
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0 0 20px;
+}
+
+.invite-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.full-width { width: 100%; }
+
+.dialog-actions { padding: 8px 0 0 !important; gap: 8px; }
+
+.send-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;
+  justify-content: center;
+}
