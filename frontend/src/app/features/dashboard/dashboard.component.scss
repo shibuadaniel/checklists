@@ -64,15 +64,12 @@ $bp-lg: 1024px;
     gap: 4px;
   }
 
-  // Font Awesome icon sizing inside mat-icon-button
+  // Match FA icon to Material icon size (24px) inside mat-icon-button
   .nav-icon-btn i {
-    font-size: 18px;
+    font-size: 24px;
+    line-height: 1;
     color: var(--mat-sys-primary);
     transition: color 150ms ease;
-
-    @media (min-width: $bp-md) {
-      font-size: 20px;
-    }
   }
 
   .nav-icon-btn:hover i {
