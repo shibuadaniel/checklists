@@ -101,17 +101,18 @@
           <!-- Donut chart card -->
           <section class="chart-card" aria-label="Completion rate chart">
             <h2 class="card-title">Completion rates</h2>
-            <div class="chart-wrap" role="img" aria-label="Doughnut chart showing completion percentage per active checklist">
-              <canvas baseChart
-                type="doughnut"
-                [data]="donutData"
-                [options]="donutOptions"
-              ></canvas>
-              <div class="chart-center-label" aria-hidden="true">
-                <span class="chart-big">{{ summary.avgCompletionRate }}%</span>
-                <span class="chart-small">avg</span>
+            <div class="chart-card-inner">
+              <div class="chart-wrap" role="img" aria-label="Doughnut chart showing completion percentage per active checklist">
+                <canvas baseChart
+                  type="doughnut"
+                  [data]="donutData"
+                  [options]="donutOptions"
+                ></canvas>
+                <div class="chart-center-label" aria-hidden="true">
+                  <span class="chart-big">{{ summary.avgCompletionRate }}%</span>
+                  <span class="chart-small">avg</span>
+                </div>
               </div>
-            </div>
 
             <!-- Legend -->
             <ul class="chart-legend" aria-label="Chart legend">
@@ -123,6 +124,7 @@
                 </li>
               }
             </ul>
+            </div><!-- /.chart-card-inner -->
           </section>
 
           <!-- Checklist list -->

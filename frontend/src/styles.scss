@@ -1,5 +1,25 @@
 @use '@angular/material' as mat;
 
+// ─────────────────────────────────────────────────────────
+// Breakpoint system (mobile-first)
+//
+//  Mobile  : default   (320px+)  — no @media wrapper
+//  Tablet  : $bp-md    (768px+)
+//  Desktop : $bp-lg    (1024px+)
+//
+// Usage:
+//   @media (min-width: $bp-md) { ... }
+//   @media (min-width: $bp-lg) { ... }
+// ─────────────────────────────────────────────────────────
+$bp-md: 768px;
+$bp-lg: 1024px;
+
+// Expose as CSS custom properties for use in component SCSS
+:root {
+  --bp-md: #{$bp-md};
+  --bp-lg: #{$bp-lg};
+}
+
 html {
   height: 100%;
   @include mat.theme(
@@ -31,19 +51,26 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Mobile-first responsive utilities */
-.container {
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
+// ─── Global utilities ───────────────────────────────────
+.full-width { width: 100%; }
 
-.full-width {
-  width: 100%;
-}
+mat-form-field.full-width { width: 100%; }
 
-/* Material form field full-width override */
-mat-form-field.full-width {
-  width: 100%;
+// ─── Skip-to-content link (accessibility) ───────────────
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 8px;
+  padding: 8px 16px;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 9999;
+  text-decoration: none;
+
+  &:focus {
+    top: 8px;
+  }
 }
