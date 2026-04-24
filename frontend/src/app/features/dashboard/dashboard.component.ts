@@ -108,12 +108,12 @@ export class DashboardComponent implements OnInit {
         {
           data: active.map(c => c.completionRate),
           backgroundColor: [
-            '#f9a8d4', // pastel rose
-            '#93c5fd', // pastel blue
-            '#86efac', // pastel green
+            '#ddd6fe', // pastel lavender
+            '#fed7aa', // pastel peach
+            '#bbf7d0', // pastel mint
             '#fde68a', // pastel amber
             '#c4b5fd', // pastel violet
-            '#99f6e4', // pastel teal
+            '#bae6fd', // pastel sky blue
           ],
           borderWidth: 0,
           hoverOffset: 4,

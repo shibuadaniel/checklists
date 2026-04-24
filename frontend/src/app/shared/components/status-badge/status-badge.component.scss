@@ -9,9 +9,9 @@
   letter-spacing: 0.5px;
   white-space: nowrap;
 
-  // Pastel badge colours
-  &--active    { background: #dbeafe; color: #3b6cb7; }
+  // Pastel lavender + peach badge colours
+  &--active    { background: #ede9fe; color: #6d4eaa; }
   &--completed { background: #dcfce7; color: #2d7a50; }
-  &--overdue   { background: #ffe4e6; color: #be4b5a; }
+  &--overdue   { background: #ffedd5; color: #a05c20; }
   &--paused    { background: #f5f5f5; color: #737373; }
 }
