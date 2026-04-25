@@ -44,6 +44,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/team/team.component').then(m => m.TeamComponent),
       },
+      {
+        path: 'checklists/new',
+        loadComponent: () =>
+          import('./features/checklists/new-checklist/new-checklist.component').then(
+            m => m.NewChecklistComponent,
+          ),
+      },
     ],
   },
 

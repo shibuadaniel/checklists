@@ -1,0 +1,100 @@
+<div class="new-checklist-page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <button mat-icon-button (click)="cancel()" class="back-btn" aria-label="Go back">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+    </button>
+    <div>
+      <h1 class="page-title">New Checklist</h1>
+      <p class="page-subtitle">Fill in the details and add your tasks</p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" novalidate class="checklist-form" (ngSubmit)="save()">
+
+    <!-- Card: Details -->
+    <section class="form-card" aria-label="Checklist details">
+      <h2 class="card-heading">Details</h2>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Title</mat-label>
+        <input
+          matInput
+          formControlName="title"
+          placeholder="e.g. Morning opening checklist"
+          autocomplete="off"
+        />
+        @if (form.controls.title.invalid && form.controls.title.touched) {
+          <mat-error>{{ titleError }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Assign to</mat-label>
+        <mat-select formControlName="assigneeId">
+          <mat-option value="">— Unassigned —</mat-option>
+          @for (m of members(); track m.id) {
+            <mat-option [value]="m.id">{{ m.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </section>
+
+    <!-- Card: Tasks -->
+    <section class="form-card" aria-label="Checklist tasks">
+      <div class="tasks-header">
+        <h2 class="card-heading">Tasks</h2>
+        <span class="task-count">{{ tasksArray.length }} task{{ tasksArray.length === 1 ? '' : 's' }}</span>
+      </div>
+
+      <ol class="task-list" aria-label="Task list">
+        @for (ctrl of tasksArray.controls; track $index; let i = $index) {
+          <li class="task-row">
+            <span class="task-number" aria-hidden="true">{{ i + 1 }}</span>
+            <input
+              class="task-input"
+              type="text"
+              [formControl]="ctrl"
+              placeholder="Describe the task…"
+              [attr.aria-label]="'Task ' + (i + 1)"
+              (keydown)="onTaskKeydown($event, i)"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              class="task-remove"
+              (click)="removeTask(i)"
+              [disabled]="tasksArray.length === 1"
+              [attr.aria-label]="'Remove task ' + (i + 1)"
+              matTooltip="Remove task">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </li>
+        }
+      </ol>
+
+      <button type="button" class="add-task-btn" (click)="addTask()">
+        <i class="fa-solid fa-plus" aria-hidden="true"></i>
+        Add task
+      </button>
+    </section>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button type="button" mat-stroked-button (click)="cancel()" [disabled]="saving()">
+        Cancel
+      </button>
+      <button type="submit" mat-flat-button [disabled]="saving()" class="save-btn">
+        @if (saving()) {
+          <mat-spinner diameter="18" />
+        } @else {
+          <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+        }
+        Create checklist
+      </button>
+    </div>
+
+  </form>
+
+</div>
