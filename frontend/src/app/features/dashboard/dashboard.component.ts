@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +14,7 @@ import { StatCardComponent } from '../../shared/components/stat-card/stat-card.c
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 import { AuthService } from '../../core/services/auth.service';
 import { DashboardSummary, Checklist } from '../../core/models/checklist.model';
+import { RecurrenceType } from '../../core/models/checklist.model';
 import { MOCK_DASHBOARD } from '../../core/mock-data/dashboard.mock';
 import { environment } from '../../../environments/environment.development';
 
@@ -45,6 +46,24 @@ export class DashboardComponent implements OnInit {
   readonly state = signal<PageState>('loading');
   readonly data = signal<DashboardSummary | null>(null);
   readonly errorMessage = signal('');
+
+  readonly recurrenceFilter = signal<RecurrenceType | 'all'>('all');
+
+  readonly recurrenceFilters: Array<{ value: RecurrenceType | 'all'; label: string }> = [
+    { value: 'all',     label: 'All' },
+    { value: 'daily',   label: 'Daily' },
+    { value: 'weekly',  label: 'Weekly' },
+    { value: 'monthly', label: 'Monthly' },
+    { value: 'yearly',  label: 'Yearly' },
+  ];
+
+  readonly filteredChecklists = computed(() => {
+    const summary = this.data();
+    if (!summary) return [];
+    const filter = this.recurrenceFilter();
+    if (filter === 'all') return summary.checklists;
+    return summary.checklists.filter(c => c.recurrence === filter);
+  });
 
   get userName(): string {
     const user = this.auth.currentUser();
@@ -138,5 +157,13 @@ export class DashboardComponent implements OnInit {
   isOverdue(dateStr?: string): boolean {
     if (!dateStr) return false;
     return new Date(dateStr) < new Date();
+  }
+
+  setFilter(value: RecurrenceType | 'all'): void {
+    this.recurrenceFilter.set(value);
+  }
+
+  recurrenceClass(recurrence: string): string {
+    return `recurrence-tag recurrence-tag--${recurrence}`;
   }
 }

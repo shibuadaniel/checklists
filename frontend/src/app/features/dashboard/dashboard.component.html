@@ -114,52 +114,77 @@
 
           <!-- Checklist list -->
           <section class="checklist-list" aria-label="Active checklists">
-            <h2 class="card-title">All checklists</h2>
 
-            <ul class="checklist-items" role="list">
-              @for (checklist of summary.checklists; track checklist.id) {
-                <li
-                  class="checklist-item"
-                  matRipple
-                  role="button"
-                  tabindex="0"
-                  [attr.aria-label]="checklist.name + ', ' + checklist.completionRate + '% complete'"
-                  (click)="navigateToChecklist(checklist.id)"
-                  (keydown.enter)="navigateToChecklist(checklist.id)"
-                  (keydown.space)="navigateToChecklist(checklist.id)"
-                >
-                  <div class="checklist-item__header">
-                    <span class="checklist-item__name">{{ checklist.name }}</span>
-                    <app-status-badge [status]="checklist.status" />
-                  </div>
+            <!-- Header row: title + filter pills -->
+            <div class="checklist-list__header">
+              <h2 class="card-title">All checklists</h2>
+              <div class="recurrence-pills" role="group" aria-label="Filter by recurrence">
+                @for (f of recurrenceFilters; track f.value) {
+                  <button
+                    class="recurrence-pill"
+                    [class.recurrence-pill--active]="recurrenceFilter() === f.value"
+                    [attr.aria-pressed]="recurrenceFilter() === f.value"
+                    (click)="setFilter(f.value)">
+                    {{ f.label }}
+                  </button>
+                }
+              </div>
+            </div>
 
-                  <div class="checklist-item__meta">
-                    <span>{{ checklist.completedTasks }}/{{ checklist.totalTasks }} tasks</span>
-                    <span class="meta-dot" aria-hidden="true">·</span>
-                    <span>{{ checklist.recurrence | titlecase }}</span>
-                    @if (checklist.dueDate) {
-                      <span class="meta-dot" aria-hidden="true">·</span>
-                      <span [class.overdue-text]="isOverdue(checklist.dueDate) && checklist.status !== 'completed'">
-                        Due {{ checklist.dueDate | date: 'MMM d' }}
-                      </span>
-                    }
-                  </div>
+            @if (filteredChecklists().length === 0) {
+              <div class="checklist-empty">
+                <i class="fa-solid fa-filter" aria-hidden="true"></i>
+                <span>No {{ recurrenceFilter() === 'all' ? '' : recurrenceFilter() + ' ' }}checklists found.</span>
+              </div>
+            } @else {
+              <ul class="checklist-items" role="list">
+                @for (checklist of filteredChecklists(); track checklist.id) {
+                  <li
+                    class="checklist-item"
+                    matRipple
+                    role="button"
+                    tabindex="0"
+                    [attr.aria-label]="checklist.name + ', ' + checklist.completionRate + '% complete'"
+                    (click)="navigateToChecklist(checklist.id)"
+                    (keydown.enter)="navigateToChecklist(checklist.id)"
+                    (keydown.space)="navigateToChecklist(checklist.id)"
+                  >
+                    <div class="checklist-item__header">
+                      <span class="checklist-item__name">{{ checklist.name }}</span>
+                      <div class="checklist-item__badges">
+                        <span [class]="recurrenceClass(checklist.recurrence)">
+                          {{ checklist.recurrence | titlecase }}
+                        </span>
+                        <app-status-badge [status]="checklist.status" />
+                      </div>
+                    </div>
 
-                  <div class="checklist-item__progress">
-                    <mat-progress-bar
-                      mode="determinate"
-                      [value]="checklist.completionRate"
-                      [color]="checklist.status === 'overdue' ? 'warn' : 'primary'"
-                      [attr.aria-valuenow]="checklist.completionRate"
-                      aria-valuemin="0"
-                      aria-valuemax="100"
-                      [attr.aria-label]="checklist.completionRate + '% complete'"
-                    />
-                    <span class="progress-pct" aria-hidden="true">{{ checklist.completionRate }}%</span>
-                  </div>
-                </li>
-              }
-            </ul>
+                    <div class="checklist-item__meta">
+                      <span>{{ checklist.completedTasks }}/{{ checklist.totalTasks }} tasks</span>
+                      @if (checklist.dueDate) {
+                        <span class="meta-dot" aria-hidden="true">·</span>
+                        <span [class.overdue-text]="isOverdue(checklist.dueDate) && checklist.status !== 'completed'">
+                          Due {{ checklist.dueDate | date: 'MMM d' }}
+                        </span>
+                      }
+                    </div>
+
+                    <div class="checklist-item__progress">
+                      <mat-progress-bar
+                        mode="determinate"
+                        [value]="checklist.completionRate"
+                        [color]="checklist.status === 'overdue' ? 'warn' : 'primary'"
+                        [attr.aria-valuenow]="checklist.completionRate"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        [attr.aria-label]="checklist.completionRate + '% complete'"
+                      />
+                      <span class="progress-pct" aria-hidden="true">{{ checklist.completionRate }}%</span>
+                    </div>
+                  </li>
+                }
+              </ul>
+            }
           </section>
 
         </div>

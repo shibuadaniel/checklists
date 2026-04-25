@@ -388,6 +388,88 @@ $bp-lg: 1024px;
   @media (min-width: $bp-lg) {
     padding: 24px;
   }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+
+    .card-title { margin-bottom: 0; }
+  }
+}
+
+// ─── Recurrence filter pills ──────────────────────────────
+.recurrence-pills {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.recurrence-pill {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--mat-sys-outline-variant);
+  background: transparent;
+  color: var(--mat-sys-on-surface-variant);
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  white-space: nowrap;
+  line-height: 1.6;
+
+  &:hover {
+    background: var(--mat-sys-surface-variant);
+    border-color: var(--mat-sys-outline);
+  }
+
+  &--active {
+    background: var(--mat-sys-primary-container);
+    border-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary-container);
+    font-weight: 600;
+  }
+}
+
+// ─── Recurrence tags (on each checklist row) ─────────────
+.recurrence-tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+
+  &--daily   { background: #ddd6fe; color: #4c1d95; }
+  &--weekly  { background: #bbf7d0; color: #14532d; }
+  &--monthly { background: #fed7aa; color: #7c2d12; }
+  &--yearly  { background: #bae6fd; color: #0c4a6e; }
+}
+
+:host-context(html.dark-mode) {
+  .recurrence-tag {
+    &--daily   { background: #4c1d95; color: #ede9fe; }
+    &--weekly  { background: #14532d; color: #dcfce7; }
+    &--monthly { background: #7c2d12; color: #ffedd5; }
+    &--yearly  { background: #0c4a6e; color: #e0f2fe; }
+  }
+}
+
+// ─── Empty state inside checklist panel ──────────────────
+.checklist-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 16px;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 13px;
+
+  i { font-size: 15px; opacity: 0.6; }
 }
 
 .checklist-items {
@@ -427,6 +509,13 @@ $bp-lg: 1024px;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+  }
+
+  &__badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
   }
 
   &__name {
