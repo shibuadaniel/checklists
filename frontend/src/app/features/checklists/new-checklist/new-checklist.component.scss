@@ -154,13 +154,13 @@ $bp-lg: 1024px;
   background: var(--mat-sys-surface);
   border: 1.5px solid var(--mat-sys-outline-variant);
   border-radius: 12px;
-  padding: 14px 44px 4px 16px;
+  padding: 14px 16px 4px 16px; // uniform horizontal padding
   transition: border-color 150ms ease;
 
   &:focus-within {
     border-color: var(--mat-sys-primary);
     border-width: 2px;
-    padding: 13px 43px 3px 15px; // compensate for extra 1px border
+    padding: 13px 15px 3px 15px;
   }
 }
 
@@ -168,7 +168,8 @@ $bp-lg: 1024px;
   width: 100%;
   border: none;
   background: transparent;
-  padding: 0 0 10px;
+  // Right padding keeps text clear of the absolutely-positioned X button
+  padding: 0 32px 10px 0;
   font-size: 14px;
   line-height: 1.6;
   color: var(--mat-sys-on-surface);
@@ -184,7 +185,7 @@ $bp-lg: 1024px;
 }
 
 .task-divider {
-  margin: 0 -16px; // bleed to card edges
+  margin: 0 -16px; // bleeds edge-to-edge (matches uniform card padding)
 }
 
 // Borderless assignee row — icon + bare mat-select, no form-field wrapper
