@@ -15,7 +15,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { CdkTextareaAutosize, TextFieldModule } from '@angular/cdk/text-field';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { MatDividerModule } from '@angular/material/divider';
 
 import { TeamMember } from '../../../core/models/team.model';
 import { RecurrenceType, CreateChecklistDto, CreateChecklistTaskDto } from '../../../core/models/checklist.model';
@@ -45,6 +46,7 @@ const RECURRENCE_OPTIONS: { value: RecurrenceType; label: string }[] = [
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
+    MatDividerModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
     MatSnackBarModule,

@@ -145,50 +145,72 @@ $bp-lg: 1024px;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
-.task-row {
+// Outlined card — M3 pattern for primary interactive containers
+.task-card {
   position: relative;
-  background: var(--mat-sys-surface-variant);
-  border-radius: 10px;
-  // Right padding leaves room for the absolutely-positioned X button
-  padding: 12px 44px 14px 14px;
-  transition: box-shadow 150ms ease;
+  background: var(--mat-sys-surface);
+  border: 1.5px solid var(--mat-sys-outline-variant);
+  border-radius: 12px;
+  padding: 14px 44px 4px 16px;
+  transition: border-color 150ms ease;
 
   &:focus-within {
-    box-shadow: 0 0 0 2px var(--mat-sys-primary);
+    border-color: var(--mat-sys-primary);
+    border-width: 2px;
+    padding: 13px 43px 3px 15px; // compensate for extra 1px border
   }
-}
-
-.task-fields {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
 }
 
 .task-title-input {
   width: 100%;
   border: none;
   background: transparent;
-  padding: 4px 0 4px;
+  padding: 0 0 10px;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.6;
   color: var(--mat-sys-on-surface);
   outline: none;
-  resize: none;        // CDK handles sizing
-  overflow: hidden;    // no scrollbar — card grows instead
+  resize: none;
+  overflow: hidden;
   font-family: inherit;
 
-  &::placeholder { color: var(--mat-sys-on-surface-variant); opacity: 0.7; }
+  &::placeholder {
+    color: var(--mat-sys-on-surface-variant);
+    opacity: 0.75;
+  }
 }
 
-.task-assignee-field {
-  width: 100%;
+.task-divider {
+  margin: 0 -16px; // bleed to card edges
+}
 
-  .mat-mdc-form-field-subscript-wrapper { display: none; }
+// Borderless assignee row — icon + bare mat-select, no form-field wrapper
+.task-assignee-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0 8px;
+}
+
+.task-assignee-icon {
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+  flex-shrink: 0;
+}
+
+// mat-select used without mat-form-field — strip all chrome
+.task-assignee-select {
+  flex: 1;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+
+  // Remove the underline and background that mat-select adds by default
+  &.mat-mdc-select {
+    background: transparent;
+  }
 }
 
 .task-remove {
@@ -207,7 +229,7 @@ $bp-lg: 1024px;
   color: var(--mat-sys-on-surface-variant);
   transition: color 150ms ease, background 150ms ease;
 
-  i { font-size: 13px; }
+  i { font-size: 12px; }
 
   &:hover:not(:disabled) {
     color: var(--mat-sys-error);

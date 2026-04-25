@@ -70,7 +70,9 @@
 
       <ul class="task-list" aria-label="Task list">
         @for (taskGroup of tasksArray.controls; track $index; let i = $index) {
-          <li class="task-row" [formGroupName]="i">
+          <li class="task-card" [formGroupName]="i">
+
+            <!-- Close button — pinned top-right of card -->
             <button
               type="button"
               class="task-remove"
@@ -81,34 +83,41 @@
               <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
 
-            <div class="task-fields">
-              <textarea
-                class="task-title-input"
-                formControlName="title"
-                placeholder="Describe the task…"
-                [attr.aria-label]="'Task ' + (i + 1) + ' description'"
-                cdkTextareaAutosize
-                cdkAutosizeMinRows="2"
-                autocomplete="off"
-              ></textarea>
+            <!-- Description -->
+            <textarea
+              class="task-title-input"
+              formControlName="title"
+              placeholder="Describe the task…"
+              [attr.aria-label]="'Task ' + (i + 1) + ' description'"
+              cdkTextareaAutosize
+              cdkAutosizeMinRows="2"
+              autocomplete="off"
+            ></textarea>
 
-              <mat-form-field appearance="outline" class="task-assignee-field">
-                <mat-label>Assign to</mat-label>
-                <mat-select formControlName="assigneeId">
-                  <mat-option value="">— Unassigned —</mat-option>
-                  @for (m of members(); track m.id) {
-                    <mat-option [value]="m.id">
-                      <div class="member-option">
-                        <div class="member-option__avatar" aria-hidden="true">
-                          {{ m.name.slice(0, 2).toUpperCase() }}
-                        </div>
-                        <span>{{ m.name }}</span>
+            <mat-divider class="task-divider" />
+
+            <!-- Assignee row — borderless, sits inside the outlined card -->
+            <div class="task-assignee-row">
+              <i class="fa-solid fa-user-tag task-assignee-icon" aria-hidden="true"></i>
+              <mat-select
+                formControlName="assigneeId"
+                class="task-assignee-select"
+                [aria-label]="'Assign task ' + (i + 1) + ' to a team member'"
+                panelClass="assignee-panel">
+                <mat-option value="">Unassigned</mat-option>
+                @for (m of members(); track m.id) {
+                  <mat-option [value]="m.id">
+                    <div class="member-option">
+                      <div class="member-option__avatar" aria-hidden="true">
+                        {{ m.name.slice(0, 2).toUpperCase() }}
                       </div>
-                    </mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
+                      <span>{{ m.name }}</span>
+                    </div>
+                  </mat-option>
+                }
+              </mat-select>
             </div>
+
           </li>
         }
       </ul>
