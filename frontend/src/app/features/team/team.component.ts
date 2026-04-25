@@ -17,6 +17,8 @@ import { StatusBadgeTeamComponent } from './components/status-badge-team.compone
 import { AddMemberDialogComponent } from './components/add-member-dialog.component';
 import { EditRoleDialogComponent } from './components/edit-role-dialog.component';
 import { CreateTeamDialogComponent } from './components/create-team-dialog.component';
+import { SupabaseService } from '../../core/services/supabase.service';
+import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment.development';
 
 type PageState = 'loading' | 'empty' | 'error' | 'success';
@@ -44,6 +46,13 @@ type PageState = 'loading' | 'empty' | 'error' | 'success';
 export class TeamComponent implements OnInit {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private supabase = inject(SupabaseService);
+  private auth = inject(AuthService);
+
+  get canManageTeam(): boolean {
+    const role = this.auth.currentUser()?.role;
+    return role === 'administrator' || role === 'executive';
+  }
 
   readonly state = signal<PageState>('loading');
   readonly members = signal<TeamMember[]>([]);
@@ -79,11 +88,12 @@ export class TeamComponent implements OnInit {
   async loadTeam(): Promise<void> {
     this.state.set('loading');
     try {
-      // BACKEND: GET /api/teams and GET /api/team
-      await new Promise(r => setTimeout(r, 500));
       if (environment.useMock) {
+        await new Promise(r => setTimeout(r, 400));
         this.teams.set(MOCK_TEAMS);
         this.members.set(MOCK_TEAM);
+      } else {
+        await Promise.all([this.loadTeamsFromSupabase(), this.loadMembersFromSupabase()]);
       }
       this.state.set(this.members().length === 0 ? 'empty' : 'success');
     } catch {
@@ -114,12 +124,9 @@ export class TeamComponent implements OnInit {
       data: { member },
     });
 
-    ref.afterClosed().subscribe((newRole: UserRole | undefined) => {
+    ref.afterClosed().subscribe(async (newRole: UserRole | undefined) => {
       if (!newRole) return;
-      this.members.update(list =>
-        list.map(m => m.id === member.id ? { ...m, role: newRole } : m)
-      );
-      this.snackBar.open(`Role updated to ${ROLE_LABELS[newRole]}`, '', { duration: 3000 });
+      await this.updateMemberRole(member, newRole);
     });
   }
 
@@ -130,17 +137,99 @@ export class TeamComponent implements OnInit {
       panelClass: 'app-dialog',
     });
 
-    ref.afterClosed().subscribe((partial: Omit<Team, 'id'> | undefined) => {
+    ref.afterClosed().subscribe(async (partial: Omit<Team, 'id'> | undefined) => {
       if (!partial) return;
-      const newTeam: Team = { id: crypto.randomUUID(), name: partial.name };
-      this.teams.update(list => [...list, newTeam]);
-      this.snackBar.open(`Team "${newTeam.name}" created`, '', { duration: 3000 });
+      await this.createTeam(partial.name);
     });
+  }
+
+  // ── Private: Supabase data loading ────────────────────────────────────
+
+  private async loadTeamsFromSupabase(): Promise<void> {
+    const { data, error } = await this.supabase.client
+      .from('teams')
+      .select('id, name')
+      .order('name');
+
+    if (error) throw error;
+    this.teams.set((data ?? []).map(t => ({ id: t['id'], name: t['name'] })));
+  }
+
+  private async loadMembersFromSupabase(): Promise<void> {
+    const { data, error } = await this.supabase.client
+      .from('profiles')
+      .select('id, email, full_name, role, team_id, avatar_url, created_at, teams(name)')
+      .order('full_name');
+
+    if (error) throw error;
+
+    const members: TeamMember[] = (data ?? []).map(p => ({
+      id: p['id'],
+      name: p['full_name'] || p['email'] || 'Unknown',
+      email: p['email'] ?? '',
+      role: (p['role'] as UserRole) ?? 'team_member',
+      status: 'active' as const,
+      avatarUrl: p['avatar_url'] ?? undefined,
+      dateAdded: p['created_at'] ?? new Date().toISOString(),
+      teamId: p['team_id'] ?? undefined,
+      teamName: (p['teams'] as { name: string }[] | null)?.[0]?.name ?? undefined,
+    }));
+
+    this.members.set(members);
+  }
+
+  // ── Private: Supabase writes ───────────────────────────────────────────
+
+  private async updateMemberRole(member: TeamMember, newRole: UserRole): Promise<void> {
+    try {
+      if (!environment.useMock) {
+        const { error } = await this.supabase.client
+          .from('profiles')
+          .update({ role: newRole, updated_at: new Date().toISOString() })
+          .eq('id', member.id);
+
+        if (error) throw error;
+      }
+
+      this.members.update(list =>
+        list.map(m => m.id === member.id ? { ...m, role: newRole } : m)
+      );
+      this.snackBar.open(`Role updated to ${ROLE_LABELS[newRole]}`, '', { duration: 3000 });
+    } catch {
+      this.snackBar.open('Failed to update role. Please try again.', 'Dismiss', {
+        duration: 5000,
+        panelClass: ['snack-error'],
+      });
+    }
+  }
+
+  private async createTeam(name: string): Promise<void> {
+    try {
+      if (environment.useMock) {
+        const newTeam: Team = { id: crypto.randomUUID(), name };
+        this.teams.update(list => [...list, newTeam]);
+      } else {
+        const { data, error } = await this.supabase.client
+          .from('teams')
+          .insert({ name })
+          .select('id, name')
+          .single();
+
+        if (error) throw error;
+        this.teams.update(list => [...list, { id: data['id'], name: data['name'] }]);
+      }
+      this.snackBar.open(`Team "${name}" created`, '', { duration: 3000 });
+    } catch {
+      this.snackBar.open('Failed to create team. Please try again.', 'Dismiss', {
+        duration: 5000,
+        panelClass: ['snack-error'],
+      });
+    }
   }
 
   private async inviteMember(dto: InviteMemberDto): Promise<void> {
     try {
-      // BACKEND: POST /api/team/invite — calls supabase.auth.admin.inviteUserByEmail()
+      // Invite flow requires service_role key (backend). Mocked for now.
       await new Promise(r => setTimeout(r, 800));
 
       const team = dto.teamId ? this.teams().find(t => t.id === dto.teamId) : undefined;

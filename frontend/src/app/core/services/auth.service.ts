@@ -4,7 +4,10 @@ import { SupabaseService } from './supabase.service';
 export interface AuthUser {
   id: string;
   email: string;
+  fullName: string;
   role: 'administrator' | 'team_lead' | 'team_member' | 'executive';
+  teamId?: string;
+  avatarUrl?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -22,12 +25,8 @@ export class AuthService {
       );
       if (error) throw new Error(error.message);
 
-      const user = data.user;
-      this.currentUser.set({
-        id: user.id,
-        email: user.email ?? '',
-        role: (user.user_metadata?.['role'] as AuthUser['role']) ?? 'team_member',
-      });
+      const profile = await this.fetchProfile(data.user.id);
+      this.currentUser.set(profile ?? this.fallbackUser(data.user));
     } finally {
       this.isLoading.set(false);
     }
@@ -49,13 +48,10 @@ export class AuthService {
   async restoreSession(): Promise<void> {
     const { data } = await this.supabase.client.auth.getSession();
     const user = data.session?.user;
-    if (user) {
-      this.currentUser.set({
-        id: user.id,
-        email: user.email ?? '',
-        role: (user.user_metadata?.['role'] as AuthUser['role']) ?? 'team_member',
-      });
-    }
+    if (!user) return;
+
+    const profile = await this.fetchProfile(user.id);
+    this.currentUser.set(profile ?? this.fallbackUser(user));
   }
 
   async signOut(): Promise<void> {
@@ -65,5 +61,41 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return this.currentUser() !== null;
+  }
+
+  /** Update the avatar URL in the current user signal (called after upload). */
+  updateAvatarUrl(url: string): void {
+    const user = this.currentUser();
+    if (user) this.currentUser.set({ ...user, avatarUrl: url });
+  }
+
+  // ── Private helpers ───────────────────────────────────────────────────
+
+  private async fetchProfile(userId: string): Promise<AuthUser | null> {
+    const { data, error } = await this.supabase.client
+      .from('profiles')
+      .select('id, email, full_name, role, team_id, avatar_url')
+      .eq('id', userId)
+      .single();
+
+    if (error || !data) return null;
+
+    return {
+      id: data['id'],
+      email: data['email'] ?? '',
+      fullName: data['full_name'] ?? '',
+      role: (data['role'] as AuthUser['role']) ?? 'team_member',
+      teamId: data['team_id'] ?? undefined,
+      avatarUrl: data['avatar_url'] ?? undefined,
+    };
+  }
+
+  private fallbackUser(user: { id: string; email?: string }): AuthUser {
+    return {
+      id: user.id,
+      email: user.email ?? '',
+      fullName: user.email?.split('@')[0] ?? 'User',
+      role: 'team_member',
+    };
   }
 }

@@ -33,18 +33,17 @@ import { ROLE_LABELS } from '../../core/models/team.model';
 export class AppLayoutComponent {
   @ViewChild('drawer') drawer!: MatDrawer;
 
-  private auth = inject(AuthService);
+  readonly auth = inject(AuthService);
   readonly theme = inject(ThemeService);
   private supabase = inject(SupabaseService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
-  readonly avatarUrl = signal<string | null>(null);
   readonly uploadingAvatar = signal(false);
 
   get userName(): string {
-    const email = this.auth.currentUser()?.email ?? '';
-    return email.split('@')[0] ?? 'User';
+    const user = this.auth.currentUser();
+    return user?.fullName || user?.email?.split('@')[0] || 'User';
   }
 
   get userEmail(): string {
@@ -56,11 +55,18 @@ export class AppLayoutComponent {
     return role ? ROLE_LABELS[role] : '';
   }
 
+  get avatarUrl(): string | null {
+    return this.auth.currentUser()?.avatarUrl ?? null;
+  }
+
   get canAccessSettings(): boolean {
     const role = this.auth.currentUser()?.role;
-    // In mock mode with no logged-in user, show settings for demo purposes
-    if (!role) return true;
     return role === 'administrator' || role === 'executive';
+  }
+
+  get canAccessTeam(): boolean {
+    const role = this.auth.currentUser()?.role;
+    return role === 'administrator' || role === 'executive' || role === 'team_lead';
   }
 
   get initials(): string {
@@ -80,7 +86,6 @@ export class AppLayoutComponent {
       const ext = file.name.split('.').pop();
       const path = `${userId}/avatar.${ext}`;
 
-      // BACKEND: POST /storage/v1/object/avatars/:path
       const { error } = await this.supabase.client.storage
         .from('avatars')
         .upload(path, file, { upsert: true });
@@ -91,7 +96,16 @@ export class AppLayoutComponent {
         .from('avatars')
         .getPublicUrl(path);
 
-      this.avatarUrl.set(data.publicUrl + `?t=${Date.now()}`);
+      const publicUrl = data.publicUrl + `?t=${Date.now()}`;
+
+      // Persist to profiles table
+      await this.supabase.client
+        .from('profiles')
+        .update({ avatar_url: data.publicUrl })
+        .eq('id', userId);
+
+      // Update the in-memory user signal
+      this.auth.updateAvatarUrl(publicUrl);
       this.snackBar.open('Profile photo updated', '', { duration: 3000 });
     } catch {
       this.snackBar.open('Failed to upload photo. Please try again.', 'Dismiss', {

@@ -7,7 +7,7 @@
     <div class="drawer-user">
       <app-avatar
         [name]="userName"
-        [photoUrl]="avatarUrl()"
+        [photoUrl]="avatarUrl"
         size="lg"
         [editable]="true"
         (photoChange)="onAvatarChange($event)"
@@ -29,10 +29,12 @@
         <i class="fa-solid fa-gauge-high" aria-hidden="true"></i>
         <span>Dashboard</span>
       </button>
-      <button class="drawer-nav__item" (click)="navigateTo('/team')">
-        <i class="fa-solid fa-users" aria-hidden="true"></i>
-        <span>Team</span>
-      </button>
+      @if (canAccessTeam) {
+        <button class="drawer-nav__item" (click)="navigateTo('/team')">
+          <i class="fa-solid fa-users" aria-hidden="true"></i>
+          <span>Team</span>
+        </button>
+      }
       @if (canAccessSettings) {
         <button class="drawer-nav__item" (click)="navigateTo('/settings')">
           <i class="fa-solid fa-gear" aria-hidden="true"></i>

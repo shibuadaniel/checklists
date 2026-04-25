@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
+import { authGuard, roleGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
@@ -30,7 +30,7 @@ export const routes: Routes = [
       import('./layouts/app-layout/app-layout.component').then(
         m => m.AppLayoutComponent,
       ),
-    // canActivate: [authGuard], // re-enable once Supabase users are set up
+    canActivate: [authGuard],
     children: [
       {
         path: 'dashboard',
@@ -40,7 +40,9 @@ export const routes: Routes = [
           ),
       },
       {
+        // Team page: visible to team leads, admins, and executives
         path: 'team',
+        canActivate: [roleGuard('administrator', 'executive', 'team_lead')],
         loadComponent: () =>
           import('./features/team/team.component').then(m => m.TeamComponent),
       },
@@ -52,7 +54,9 @@ export const routes: Routes = [
           ),
       },
       {
+        // Settings: admin and executive only
         path: 'settings',
+        canActivate: [roleGuard('administrator', 'executive')],
         loadComponent: () =>
           import('./features/settings/settings.component').then(
             m => m.SettingsComponent,

@@ -47,7 +47,8 @@ export class DashboardComponent implements OnInit {
   readonly errorMessage = signal('');
 
   get userName(): string {
-    return this.auth.currentUser()?.email?.split('@')[0] ?? 'there';
+    const user = this.auth.currentUser();
+    return user?.fullName || user?.email?.split('@')[0] || 'there';
   }
 
   donutData: ChartData<'doughnut'> = { labels: [], datasets: [] };
