@@ -24,8 +24,17 @@ export class ThemeService {
   }
 
   toggle(): void {
-    this.mode.set(this.isDark() ? 'light' : 'dark');
-    localStorage.setItem('theme', this.mode());
+    // Cycle: system → dark → light → system
+    const next: ThemeMode =
+      this.mode() === 'system' ? 'dark' :
+      this.mode() === 'dark'   ? 'light' :
+                                 'system';
+    this.mode.set(next);
+    if (next === 'system') {
+      localStorage.removeItem('theme'); // clear override; follow OS again
+    } else {
+      localStorage.setItem('theme', next);
+    }
   }
 
   setMode(mode: ThemeMode): void {
@@ -41,8 +50,16 @@ export class ThemeService {
     this.isDark.set(dark);
 
     const html = document.documentElement;
-    html.classList.toggle('dark-mode', dark);
-    html.classList.toggle('light-mode', !dark);
+
+    if (mode === 'system') {
+      // Remove both manual classes — let the CSS @media prefers-color-scheme rule
+      // handle rendering automatically, so OS changes apply instantly without JS.
+      html.classList.remove('dark-mode');
+      html.classList.remove('light-mode');
+    } else {
+      html.classList.toggle('dark-mode', dark);
+      html.classList.toggle('light-mode', !dark);
+    }
   }
 
   private savedMode(): ThemeMode {
@@ -50,6 +67,7 @@ export class ThemeService {
     if (stored === 'light' || stored === 'dark' || stored === 'system') {
       return stored;
     }
-    return 'system'; // respect OS by default
+    // No stored preference — follow OS by default
+    return 'system';
   }
 }

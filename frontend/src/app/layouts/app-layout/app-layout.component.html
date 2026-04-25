@@ -40,10 +40,19 @@
     <!-- Theme toggle -->
     <div class="drawer-section">
       <span class="drawer-section__label">Appearance</span>
-      <button class="drawer-toggle-row" (click)="theme.toggle()" [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
+      <button class="drawer-toggle-row" (click)="theme.toggle()"
+        [attr.aria-label]="'Current theme: ' + theme.mode() + '. Click to cycle.'">
         <div class="drawer-toggle-row__left">
-          <i [class]="theme.isDark() ? 'fa-solid fa-sun' : 'fa-solid fa-moon'" aria-hidden="true"></i>
-          <span>{{ theme.isDark() ? 'Light mode' : 'Dark mode' }}</span>
+          <i [class]="
+            theme.mode() === 'dark'   ? 'fa-solid fa-moon' :
+            theme.mode() === 'light'  ? 'fa-solid fa-sun'  :
+                                        'fa-solid fa-circle-half-stroke'"
+            aria-hidden="true"></i>
+          <span>{{
+            theme.mode() === 'dark'  ? 'Dark mode' :
+            theme.mode() === 'light' ? 'Light mode' :
+                                       'Auto (System)'
+          }}</span>
         </div>
         <div class="theme-pill" [class.theme-pill--dark]="theme.isDark()">
           <div class="theme-pill__knob"></div>
