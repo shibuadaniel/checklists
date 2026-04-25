@@ -84,6 +84,33 @@ body {
 
 mat-form-field.full-width { width: 100%; }
 
+// ─── Dialog overrides (.app-dialog panelClass) ───────────
+.app-dialog {
+  // Reduced corner radius (Material M3 default is 28px)
+  .mat-mdc-dialog-surface {
+    border-radius: 12px !important;
+  }
+
+  // Consistent top padding for the title area
+  .mat-mdc-dialog-title {
+    padding: 20px 24px 12px !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+  }
+
+  // Content area horizontal padding matching title
+  .mat-mdc-dialog-content {
+    padding: 0 24px 16px !important;
+  }
+
+  // Bottom padding equal to top so the dialog looks symmetric
+  .mat-mdc-dialog-actions {
+    padding: 12px 24px 20px !important;
+    gap: 8px;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+  }
+}
+
 // ─── Skip-to-content (accessibility) ────────────────────
 .skip-link {
   position: absolute;

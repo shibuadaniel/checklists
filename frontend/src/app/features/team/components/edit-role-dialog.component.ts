@@ -38,10 +38,9 @@ import { TeamMember, UserRole, ALL_ROLES, ROLE_LABELS } from '../../../core/mode
     </mat-dialog-actions>
   `,
   styles: [`
-    .dialog-title { display:flex; align-items:center; gap:10px; font-size:17px; font-weight:600; i { color:var(--mat-sys-primary); } }
-    .dialog-content { padding-top: 12px !important; }
+    .dialog-title { display:flex; align-items:center; gap:10px; i { color:var(--mat-sys-primary); } }
+    .dialog-content { padding-top: 4px !important; }
     .full-width { width: 100%; }
-    .dialog-actions { padding: 8px 0 0 !important; gap: 8px; }
   `],
 })
 export class EditRoleDialogComponent {

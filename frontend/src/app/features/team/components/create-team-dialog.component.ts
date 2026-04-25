@@ -50,16 +50,9 @@ import { Team } from '../../../core/models/team.model';
     </mat-dialog-actions>
   `,
   styles: [`
-    .dialog-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 18px;
-      margin: 0;
-    }
-    .dialog-content { padding-top: 8px !important; min-width: 320px; }
+    .dialog-title { display: flex; align-items: center; gap: 10px; margin: 0; i { color: var(--mat-sys-primary); } }
+    .dialog-content { padding-top: 4px !important; min-width: 320px; }
     .full-width { width: 100%; margin-top: 8px; }
-    .dialog-actions { padding: 8px 16px 16px; gap: 8px; }
     .create-btn { display: flex; align-items: center; gap: 8px; }
   `],
 })
