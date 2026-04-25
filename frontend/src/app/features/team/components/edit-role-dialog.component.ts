@@ -19,8 +19,13 @@ import { TeamMember, UserRole, ALL_ROLES, ROLE_LABELS } from '../../../core/mode
   ],
   template: `
     <h2 mat-dialog-title class="dialog-title">
-      <i class="fa-solid fa-pen" aria-hidden="true"></i>
-      Edit role — {{ data.member.name }}
+      <span class="dialog-title__label">
+        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+        Edit role — {{ data.member.name }}
+      </span>
+      <button mat-icon-button mat-dialog-close class="dialog-close" aria-label="Close dialog">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
     </h2>
     <mat-dialog-content class="dialog-content">
       <mat-form-field appearance="outline" class="full-width">

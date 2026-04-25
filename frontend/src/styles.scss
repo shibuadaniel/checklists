@@ -98,6 +98,34 @@ mat-form-field.full-width { width: 100%; }
     font-weight: 600 !important;
   }
 
+  // Title row layout — label on left, X button on right
+  .dialog-title {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .dialog-title__label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dialog-close {
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    flex-shrink: 0;
+    margin-right: -8px;
+
+    i {
+      font-size: 16px;
+      color: var(--mat-sys-on-surface-variant);
+    }
+
+    &:hover i { color: var(--mat-sys-on-surface); }
+  }
+
   // Content area horizontal padding matching title
   .mat-mdc-dialog-content {
     padding: 0 24px 16px !important;
