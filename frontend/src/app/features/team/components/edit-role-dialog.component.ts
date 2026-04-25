@@ -32,7 +32,7 @@ import { TeamMember, UserRole, ALL_ROLES, ROLE_LABELS } from '../../../core/mode
         </mat-select>
       </mat-form-field>
     </mat-dialog-content>
-    <mat-dialog-actions align="end" class="dialog-actions">
+    <mat-dialog-actions class="dialog-actions">
       <button mat-button (click)="cancel()">Cancel</button>
       <button mat-flat-button (click)="save()">Save</button>
     </mat-dialog-actions>

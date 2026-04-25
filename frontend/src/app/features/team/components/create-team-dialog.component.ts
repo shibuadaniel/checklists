@@ -41,7 +41,7 @@ import { Team } from '../../../core/models/team.model';
       </form>
     </mat-dialog-content>
 
-    <mat-dialog-actions align="end" class="dialog-actions">
+    <mat-dialog-actions class="dialog-actions">
       <button mat-button (click)="cancel()">Cancel</button>
       <button mat-flat-button (click)="create()" class="create-btn">
         <i class="fa-solid fa-check" aria-hidden="true"></i>
