@@ -26,10 +26,16 @@ export interface Checklist {
   updatedAt: string;
 }
 
+export interface CreateChecklistTaskDto {
+  title: string;
+  assigneeId?: string;   // team member assigned to this specific task
+}
+
 export interface CreateChecklistDto {
   title: string;
-  tasks: string[];         // task titles
-  assigneeId?: string;
+  recurrence: RecurrenceType;
+  dueDate: string;         // YYYY-MM-DD, auto-calculated but user-editable
+  tasks: CreateChecklistTaskDto[];
 }
 
 export interface DashboardSummary {

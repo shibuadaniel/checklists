@@ -3,7 +3,7 @@ $bp-lg: 1024px;
 
 .new-checklist-page {
   padding: 16px 12px 48px;
-  max-width: 680px;
+  max-width: 720px;
   margin: 0 auto;
 
   @media (min-width: $bp-md) { padding: 24px 20px 56px; }
@@ -60,19 +60,65 @@ $bp-lg: 1024px;
 }
 
 .card-heading {
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 600;
-  color: var(--mat-sys-on-surface);
-  margin: 0 0 16px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--mat-sys-on-surface-variant);
+  margin: 0 0 16px;
 }
 
-.full-width {
-  width: 100%;
-  &:not(:last-child) { margin-bottom: 4px; }
+.full-width { width: 100%; }
+
+// ── Recurrence segmented control ──────────────────────────
+.field-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+  margin-bottom: 8px;
 }
+
+.recurrence-seg {
+  display: flex;
+  background: var(--mat-sys-surface-variant);
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 20px;
+  gap: 0;
+}
+
+.recurrence-btn {
+  flex: 1;
+  padding: 8px 4px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+  transition: background 150ms ease, color 150ms ease;
+  white-space: nowrap;
+
+  &:hover:not(&--active) {
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+  }
+
+  &--active {
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-primary);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: -2px;
+  }
+}
+
+.due-date-field { margin-top: 4px; }
 
 // ── Tasks section ─────────────────────────────────────────
 .tasks-header {
@@ -99,16 +145,16 @@ $bp-lg: 1024px;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .task-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   background: var(--mat-sys-surface-variant);
-  border-radius: 8px;
-  padding: 2px 4px 2px 12px;
+  border-radius: 10px;
+  padding: 10px 6px 10px 12px;
   transition: box-shadow 150ms ease;
 
   &:focus-within {
@@ -123,19 +169,34 @@ $bp-lg: 1024px;
   min-width: 16px;
   text-align: center;
   flex-shrink: 0;
+  padding-top: 12px;
 }
 
-.task-input {
+.task-fields {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.task-title-input {
+  width: 100%;
   border: none;
   background: transparent;
-  padding: 11px 0;
+  padding: 10px 0 6px;
   font-size: 14px;
   color: var(--mat-sys-on-surface);
   outline: none;
-  min-width: 0;
 
   &::placeholder { color: var(--mat-sys-on-surface-variant); opacity: 0.7; }
+}
+
+.task-assignee-field {
+  width: 100%;
+
+  // Reduce the field height inside the task row
+  .mat-mdc-form-field-subscript-wrapper { display: none; }
 }
 
 .task-remove {
@@ -151,6 +212,7 @@ $bp-lg: 1024px;
   justify-content: center;
   color: var(--mat-sys-on-surface-variant);
   transition: color 150ms ease, background 150ms ease;
+  margin-top: 4px;
 
   i { font-size: 13px; }
 
@@ -159,10 +221,7 @@ $bp-lg: 1024px;
     background: color-mix(in srgb, var(--mat-sys-error) 10%, transparent);
   }
 
-  &:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
+  &:disabled { opacity: 0.3; cursor: not-allowed; }
 }
 
 .add-task-btn {
@@ -186,11 +245,6 @@ $bp-lg: 1024px;
     border-color: var(--mat-sys-primary);
     color: var(--mat-sys-primary);
   }
-
-  &:focus-visible {
-    outline: 2px solid var(--mat-sys-primary);
-    outline-offset: 2px;
-  }
 }
 
 // ── Form actions ──────────────────────────────────────────
@@ -202,7 +256,6 @@ $bp-lg: 1024px;
 
   @media (max-width: #{$bp-md - 1px}) {
     flex-direction: column-reverse;
-
     button { width: 100%; }
   }
 }

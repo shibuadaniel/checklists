@@ -56,6 +56,13 @@ export class AppLayoutComponent {
     return role ? ROLE_LABELS[role] : '';
   }
 
+  get canAccessSettings(): boolean {
+    const role = this.auth.currentUser()?.role;
+    // In mock mode with no logged-in user, show settings for demo purposes
+    if (!role) return true;
+    return role === 'administrator' || role === 'executive';
+  }
+
   get initials(): string {
     return this.userName.slice(0, 2).toUpperCase();
   }

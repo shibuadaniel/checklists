@@ -1,0 +1,62 @@
+<div class="settings-page">
+
+  <div class="page-header">
+    <button mat-icon-button (click)="cancel()" class="back-btn" aria-label="Go back">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+    </button>
+    <div>
+      <h1 class="page-title">Settings</h1>
+      <p class="page-subtitle">System-wide configuration</p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" novalidate (ngSubmit)="save()" class="settings-form">
+
+    <!-- Working hours -->
+    <section class="settings-card" aria-label="Working hours">
+      <div class="card-icon-row">
+        <i class="fa-solid fa-clock card-icon" aria-hidden="true"></i>
+        <div>
+          <h2 class="card-heading">Working hours</h2>
+          <p class="card-desc">Daily checklists are due by end of day. These times also determine when a daily checklist becomes overdue.</p>
+        </div>
+      </div>
+
+      <div class="time-row">
+        <mat-form-field appearance="outline" class="time-field">
+          <mat-label>Start of day</mat-label>
+          <input matInput type="time" formControlName="startOfDay" />
+          @if (form.controls.startOfDay.invalid && form.controls.startOfDay.touched) {
+            <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="time-divider">
+          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+        </div>
+
+        <mat-form-field appearance="outline" class="time-field">
+          <mat-label>End of day</mat-label>
+          <input matInput type="time" formControlName="endOfDay" />
+          @if (form.controls.endOfDay.invalid && form.controls.endOfDay.touched) {
+            <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <p class="schedule-hint">
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        <strong>Weekly</strong> checklists are due Sunday · <strong>Monthly</strong> due last day of month · <strong>Yearly</strong> due Dec 31
+      </p>
+    </section>
+
+    <div class="form-actions">
+      <button type="button" mat-stroked-button (click)="cancel()" [disabled]="saving()">Cancel</button>
+      <button type="submit" mat-flat-button [disabled]="saving()" class="save-btn">
+        <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+        Save settings
+      </button>
+    </div>
+
+  </form>
+</div>

@@ -51,6 +51,13 @@ export const routes: Routes = [
             m => m.NewChecklistComponent,
           ),
       },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/settings/settings.component').then(
+            m => m.SettingsComponent,
+          ),
+      },
     ],
   },
 

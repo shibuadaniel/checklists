@@ -3,6 +3,7 @@ import {
   FormArray,
   FormBuilder,
   FormControl,
+  FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -16,9 +17,22 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { TeamMember } from '../../../core/models/team.model';
-import { CreateChecklistDto } from '../../../core/models/checklist.model';
+import { RecurrenceType, CreateChecklistDto, CreateChecklistTaskDto } from '../../../core/models/checklist.model';
 import { MOCK_TEAM } from '../../../core/mock-data/team.mock';
+import { SettingsService } from '../../../core/services/settings.service';
 import { environment } from '../../../../environments/environment.development';
+
+interface TaskFormGroup {
+  title: FormControl<string>;
+  assigneeId: FormControl<string>;
+}
+
+const RECURRENCE_OPTIONS: { value: RecurrenceType; label: string }[] = [
+  { value: 'daily',   label: 'Daily'   },
+  { value: 'weekly',  label: 'Weekly'  },
+  { value: 'monthly', label: 'Monthly' },
+  { value: 'yearly',  label: 'Yearly'  },
+];
 
 @Component({
   selector: 'app-new-checklist',
@@ -40,17 +54,20 @@ export class NewChecklistComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  readonly settingsService = inject(SettingsService);
 
   readonly saving = signal(false);
   readonly members = signal<TeamMember[]>([]);
+  readonly recurrenceOptions = RECURRENCE_OPTIONS;
 
   form = this.fb.nonNullable.group({
-    title: ['', [Validators.required, Validators.minLength(2)]],
-    assigneeId: [''],
-    tasks: this.fb.array<FormControl<string>>([]),
+    title:      ['', [Validators.required, Validators.minLength(2)]],
+    recurrence: ['daily' as RecurrenceType, Validators.required],
+    dueDate:    [this.settingsService.dueDateFor('daily'), Validators.required],
+    tasks:      this.fb.array<FormGroup<TaskFormGroup>>([]),
   });
 
-  get tasksArray(): FormArray<FormControl<string>> {
+  get tasksArray(): FormArray<FormGroup<TaskFormGroup>> {
     return this.form.controls.tasks;
   }
 
@@ -62,58 +79,63 @@ export class NewChecklistComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Load team members for the assignee dropdown
     if (environment.useMock) {
       this.members.set(MOCK_TEAM.filter(m => m.status === 'active'));
     }
-    // Start with one empty task row
     this.addTask();
+
+    // Auto-update due date whenever recurrence changes
+    this.form.controls.recurrence.valueChanges.subscribe(rec => {
+      this.form.controls.dueDate.setValue(this.settingsService.dueDateFor(rec));
+    });
   }
 
-  addTask(value = ''): void {
-    const control = this.fb.nonNullable.control(value, Validators.required);
-    this.tasksArray.push(control);
+  addTask(): void {
+    const group = this.fb.nonNullable.group<TaskFormGroup>({
+      title:      this.fb.nonNullable.control('', Validators.required),
+      assigneeId: this.fb.nonNullable.control(''),
+    });
+    this.tasksArray.push(group);
   }
 
   removeTask(index: number): void {
-    if (this.tasksArray.length > 1) {
-      this.tasksArray.removeAt(index);
-    }
+    if (this.tasksArray.length > 1) this.tasksArray.removeAt(index);
   }
 
   onTaskKeydown(event: KeyboardEvent, index: number): void {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      // If this is the last row, add a new one; otherwise move focus to next
-      if (index === this.tasksArray.length - 1) {
-        this.addTask();
-        // Focus the new input after DOM update
-        setTimeout(() => {
-          const inputs = document.querySelectorAll<HTMLInputElement>('.task-input');
-          inputs[index + 1]?.focus();
-        });
-      }
+    if (event.key !== 'Enter') return;
+    event.preventDefault();
+    if (index === this.tasksArray.length - 1) {
+      this.addTask();
+      setTimeout(() => {
+        const inputs = document.querySelectorAll<HTMLInputElement>('.task-title-input');
+        inputs[index + 1]?.focus();
+      });
     }
   }
 
+  setRecurrence(value: RecurrenceType): void {
+    this.form.controls.recurrence.setValue(value);
+  }
+
   async save(): Promise<void> {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
 
     const raw = this.form.getRawValue();
-    const nonEmptyTasks = raw.tasks.filter(t => t.trim().length > 0);
+    const tasks: CreateChecklistTaskDto[] = raw.tasks
+      .filter(t => t.title.trim().length > 0)
+      .map(t => ({ title: t.title.trim(), assigneeId: t.assigneeId || undefined }));
 
-    if (nonEmptyTasks.length === 0) {
+    if (tasks.length === 0) {
       this.snackBar.open('Add at least one task before saving.', '', { duration: 3000 });
       return;
     }
 
     const dto: CreateChecklistDto = {
-      title: raw.title.trim(),
-      tasks: nonEmptyTasks,
-      assigneeId: raw.assigneeId || undefined,
+      title:      raw.title.trim(),
+      recurrence: raw.recurrence,
+      dueDate:    raw.dueDate,
+      tasks,
     };
 
     this.saving.set(true);
