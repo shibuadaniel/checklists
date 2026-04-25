@@ -149,12 +149,11 @@ $bp-lg: 1024px;
 }
 
 .task-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
+  position: relative;
   background: var(--mat-sys-surface-variant);
   border-radius: 10px;
-  padding: 12px 6px 12px 14px;
+  // Right padding leaves room for the absolutely-positioned X button
+  padding: 12px 44px 14px 14px;
   transition: box-shadow 150ms ease;
 
   &:focus-within {
@@ -193,9 +192,11 @@ $bp-lg: 1024px;
 }
 
 .task-remove {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  position: absolute;
+  top: 10px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
   border: none;
   background: none;
   cursor: pointer;
@@ -205,9 +206,6 @@ $bp-lg: 1024px;
   justify-content: center;
   color: var(--mat-sys-on-surface-variant);
   transition: color 150ms ease, background 150ms ease;
-  // Align horizontally with the first line of the textarea:
-  // row padding-top (12px) + textarea padding-top (4px) + ½ line-height (10px) − ½ button (16px) = 10px
-  margin-top: 10px;
 
   i { font-size: 13px; }
 
@@ -216,7 +214,7 @@ $bp-lg: 1024px;
     background: color-mix(in srgb, var(--mat-sys-error) 10%, transparent);
   }
 
-  &:disabled { opacity: 0.3; cursor: not-allowed; }
+  &:disabled { opacity: 0.25; cursor: not-allowed; }
 }
 
 .add-task-btn {

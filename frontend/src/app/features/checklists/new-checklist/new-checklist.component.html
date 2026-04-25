@@ -71,6 +71,15 @@
       <ul class="task-list" aria-label="Task list">
         @for (taskGroup of tasksArray.controls; track $index; let i = $index) {
           <li class="task-row" [formGroupName]="i">
+            <button
+              type="button"
+              class="task-remove"
+              (click)="removeTask(i)"
+              [disabled]="tasksArray.length === 1"
+              [attr.aria-label]="'Remove task ' + (i + 1)"
+              matTooltip="Remove task">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
 
             <div class="task-fields">
               <textarea
@@ -100,16 +109,6 @@
                 </mat-select>
               </mat-form-field>
             </div>
-
-            <button
-              type="button"
-              class="task-remove"
-              (click)="removeTask(i)"
-              [disabled]="tasksArray.length === 1"
-              [attr.aria-label]="'Remove task ' + (i + 1)"
-              matTooltip="Remove task">
-              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-            </button>
           </li>
         }
       </ul>
