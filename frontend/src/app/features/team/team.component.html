@@ -180,10 +180,10 @@
               </button>
             </div>
             <div class="mobile-card__meta">
+              <span class="role-label">{{ getRoleLabel(m.role) }}</span>
               @if (m.teamName) {
                 <span class="team-badge">{{ m.teamName }}</span>
               }
-              <span class="role-label">{{ getRoleLabel(m.role) }}</span>
               <app-status-badge-team [status]="m.status" />
             </div>
           </li>
