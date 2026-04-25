@@ -236,6 +236,11 @@ $bp-lg: 1024px;
     align-items: start;
     gap: 16px;
   }
+
+  // Team member view: no chart, checklist fills full width at all breakpoints
+  &--full {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 // ─── Chart card ──────────────────────────────────────────

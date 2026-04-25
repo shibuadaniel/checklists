@@ -51,6 +51,10 @@ export class DashboardComponent implements OnInit {
     return user?.fullName || user?.email?.split('@')[0] || 'there';
   }
 
+  get isTeamMember(): boolean {
+    return this.auth.currentUser()?.role === 'team_member';
+  }
+
   donutData: ChartData<'doughnut'> = { labels: [], datasets: [] };
 
   readonly donutOptions: ChartOptions<'doughnut'> = {

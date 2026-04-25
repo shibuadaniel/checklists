@@ -47,66 +47,70 @@
           </div>
         </div>
 
-        <!-- Stat cards -->
-        <section class="stat-grid" aria-label="Summary statistics">
-          <app-stat-card
-            label="Active checklists"
-            [value]="summary.totalActive"
-            icon="assignment"
-            accent="primary"
-          />
-          <app-stat-card
-            label="Completed today"
-            [value]="summary.completedToday"
-            icon="task_alt"
-            accent="success"
-          />
-          <app-stat-card
-            label="Overdue"
-            [value]="summary.overdue"
-            icon="warning_amber"
-            [accent]="summary.overdue > 0 ? 'warn' : 'neutral'"
-          />
-          <app-stat-card
-            label="Avg completion"
-            [value]="summary.avgCompletionRate + '%'"
-            icon="donut_large"
-            accent="primary"
-            sublabel="across all active"
-          />
-        </section>
+        <!-- Stat cards — hidden for team members -->
+        @if (!isTeamMember) {
+          <section class="stat-grid" aria-label="Summary statistics">
+            <app-stat-card
+              label="Active checklists"
+              [value]="summary.totalActive"
+              icon="assignment"
+              accent="primary"
+            />
+            <app-stat-card
+              label="Completed today"
+              [value]="summary.completedToday"
+              icon="task_alt"
+              accent="success"
+            />
+            <app-stat-card
+              label="Overdue"
+              [value]="summary.overdue"
+              icon="warning_amber"
+              [accent]="summary.overdue > 0 ? 'warn' : 'neutral'"
+            />
+            <app-stat-card
+              label="Avg completion"
+              [value]="summary.avgCompletionRate + '%'"
+              icon="donut_large"
+              accent="primary"
+              sublabel="across all active"
+            />
+          </section>
+        }
 
         <!-- Chart + checklist grid -->
-        <div class="content-grid">
+        <div class="content-grid" [class.content-grid--full]="isTeamMember">
 
-          <!-- Donut chart card -->
-          <section class="chart-card" aria-label="Completion rate chart">
-            <h2 class="card-title">Completion rates</h2>
-            <div class="chart-card-inner">
-              <div class="chart-wrap" role="img" aria-label="Doughnut chart showing completion percentage per active checklist">
-                <canvas baseChart
-                  type="doughnut"
-                  [data]="donutData"
-                  [options]="donutOptions"
-                ></canvas>
-                <div class="chart-center-label" aria-hidden="true">
-                  <span class="chart-big">{{ summary.avgCompletionRate }}%</span>
-                  <span class="chart-small">avg</span>
+          <!-- Donut chart card — hidden for team members -->
+          @if (!isTeamMember) {
+            <section class="chart-card" aria-label="Completion rate chart">
+              <h2 class="card-title">Completion rates</h2>
+              <div class="chart-card-inner">
+                <div class="chart-wrap" role="img" aria-label="Doughnut chart showing completion percentage per active checklist">
+                  <canvas baseChart
+                    type="doughnut"
+                    [data]="donutData"
+                    [options]="donutOptions"
+                  ></canvas>
+                  <div class="chart-center-label" aria-hidden="true">
+                    <span class="chart-big">{{ summary.avgCompletionRate }}%</span>
+                    <span class="chart-small">avg</span>
+                  </div>
                 </div>
-              </div>
 
-            <!-- Legend -->
-            <ul class="chart-legend" aria-label="Chart legend">
-              @for (checklist of summary.checklists; track checklist.id; let i = $index) {
-                <li class="legend-item">
-                  <span class="legend-dot" [style.background]="['#ddd6fe','#fed7aa','#bbf7d0','#fde68a','#c4b5fd','#bae6fd'][i % 6]" aria-hidden="true"></span>
-                  <span class="legend-name">{{ checklist.name }}</span>
-                  <span class="legend-value">{{ checklist.completionRate }}%</span>
-                </li>
-              }
-            </ul>
-            </div><!-- /.chart-card-inner -->
-          </section>
+              <!-- Legend -->
+              <ul class="chart-legend" aria-label="Chart legend">
+                @for (checklist of summary.checklists; track checklist.id; let i = $index) {
+                  <li class="legend-item">
+                    <span class="legend-dot" [style.background]="['#ddd6fe','#fed7aa','#bbf7d0','#fde68a','#c4b5fd','#bae6fd'][i % 6]" aria-hidden="true"></span>
+                    <span class="legend-name">{{ checklist.name }}</span>
+                    <span class="legend-value">{{ checklist.completionRate }}%</span>
+                  </li>
+                }
+              </ul>
+              </div><!-- /.chart-card-inner -->
+            </section>
+          }
 
           <!-- Checklist list -->
           <section class="checklist-list" aria-label="Active checklists">
