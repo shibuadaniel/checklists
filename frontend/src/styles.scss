@@ -156,6 +156,29 @@ mat-form-field.full-width { width: 100%; }
   &:focus { top: 8px; }
 }
 
+// ─── Member option (avatar + name inside mat-option) ─────
+// Must be global — mat-select overlay renders outside component scope
+.member-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &__avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.3px;
+  }
+}
+
 // ─── Dark-mode overrides for hardcoded colours ───────────
 // Badge colours use hardcoded hex — override for dark
 html.dark-mode {

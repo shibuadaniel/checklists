@@ -151,10 +151,10 @@ $bp-lg: 1024px;
 .task-row {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: 8px;
   background: var(--mat-sys-surface-variant);
   border-radius: 10px;
-  padding: 10px 6px 10px 12px;
+  padding: 12px 6px 12px 14px;
   transition: box-shadow 150ms ease;
 
   &:focus-within {
@@ -162,32 +162,26 @@ $bp-lg: 1024px;
   }
 }
 
-.task-number {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--mat-sys-on-surface-variant);
-  min-width: 16px;
-  text-align: center;
-  flex-shrink: 0;
-  padding-top: 12px;
-}
-
 .task-fields {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
 }
 
 .task-title-input {
   width: 100%;
   border: none;
   background: transparent;
-  padding: 10px 0 6px;
+  padding: 4px 0 4px;
   font-size: 14px;
+  line-height: 1.5;
   color: var(--mat-sys-on-surface);
   outline: none;
+  resize: none;
+  font-family: inherit;
+  min-height: 48px;
 
   &::placeholder { color: var(--mat-sys-on-surface-variant); opacity: 0.7; }
 }
@@ -195,7 +189,6 @@ $bp-lg: 1024px;
 .task-assignee-field {
   width: 100%;
 
-  // Reduce the field height inside the task row
   .mat-mdc-form-field-subscript-wrapper { display: none; }
 }
 
@@ -212,7 +205,7 @@ $bp-lg: 1024px;
   justify-content: center;
   color: var(--mat-sys-on-surface-variant);
   transition: color 150ms ease, background 150ms ease;
-  margin-top: 4px;
+  margin-top: 2px;
 
   i { font-size: 13px; }
 
