@@ -188,65 +188,50 @@ main {
   }
 }
 
-.drawer-toggle-row {
-  width: 100%;
+// Theme segmented control
+.theme-seg {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px 0;
-  border-radius: 8px;
+  gap: 0;
+  background: var(--mat-sys-surface-variant);
+  border-radius: 10px;
+  padding: 3px;
 
-  &__left {
+  &__btn {
+    flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    font-size: 14px;
+    gap: 4px;
+    padding: 8px 4px;
+    border: none;
+    background: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 11px;
     font-weight: 500;
-    color: var(--mat-sys-on-surface);
+    transition: background 150ms ease, color 150ms ease;
+    line-height: 1;
 
-    i {
-      font-size: 16px;
-      width: 18px;
-      color: var(--mat-sys-on-surface-variant);
+    i { font-size: 15px; }
+
+    &:hover:not(&--active) {
+      background: var(--mat-sys-surface);
+      color: var(--mat-sys-on-surface);
     }
-  }
 
-  &:focus-visible {
-    outline: 2px solid var(--mat-sys-primary);
-    outline-offset: 2px;
-  }
-}
+    &--active {
+      background: var(--mat-sys-surface);
+      color: var(--mat-sys-primary);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08);
 
-// Theme toggle pill
-.theme-pill {
-  width: 40px;
-  height: 22px;
-  border-radius: 11px;
-  background: var(--mat-sys-outline-variant);
-  position: relative;
-  transition: background 200ms ease;
-  flex-shrink: 0;
+      i { color: var(--mat-sys-primary); }
+    }
 
-  &--dark {
-    background: var(--mat-sys-primary);
-  }
-
-  &__knob {
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: white;
-    transition: transform 200ms ease;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-
-    .theme-pill--dark & {
-      transform: translateX(18px);
+    &:focus-visible {
+      outline: 2px solid var(--mat-sys-primary);
+      outline-offset: -2px;
     }
   }
 }

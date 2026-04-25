@@ -39,7 +39,11 @@ export class ThemeService {
 
   setMode(mode: ThemeMode): void {
     this.mode.set(mode);
-    localStorage.setItem('theme', mode);
+    if (mode === 'system') {
+      localStorage.removeItem('theme');
+    } else {
+      localStorage.setItem('theme', mode);
+    }
   }
 
   private apply(mode: ThemeMode): void {
