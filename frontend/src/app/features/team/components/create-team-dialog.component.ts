@@ -19,14 +19,12 @@ import { Team } from '../../../core/models/team.model';
   ],
   template: `
     <h2 mat-dialog-title class="dialog-title">
-      <span class="dialog-title__label">
-        <i class="fa-solid fa-people-group" aria-hidden="true"></i>
-        Create team
-      </span>
-      <button mat-icon-button mat-dialog-close class="dialog-close" aria-label="Close dialog">
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-      </button>
+      <i class="fa-solid fa-people-group" aria-hidden="true"></i>
+      Create team
     </h2>
+    <button mat-icon-button mat-dialog-close class="dialog-close" aria-label="Close dialog">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
 
     <mat-dialog-content class="dialog-content">
       <form [formGroup]="form" novalidate>

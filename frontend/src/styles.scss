@@ -86,39 +86,36 @@ mat-form-field.full-width { width: 100%; }
 
 // ─── Dialog overrides (.app-dialog panelClass) ───────────
 .app-dialog {
-  // Reduced corner radius (Material M3 default is 28px)
+  // Reduced corner radius; relative so the X button can be absolute-positioned
   .mat-mdc-dialog-surface {
     border-radius: 12px !important;
+    position: relative !important;
   }
 
-  // Consistent top padding for the title area
+  // Left-aligned title; right padding leaves room for the X button
   .mat-mdc-dialog-title {
-    padding: 20px 24px 12px !important;
+    padding: 20px 52px 12px 24px !important;
     font-size: 18px !important;
     font-weight: 600 !important;
     text-align: left !important;
   }
 
-  // Title row layout — label on left, X button on right, both vertically centered
+  // Icon + text sit side-by-side in the title
   .dialog-title {
     display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    width: 100%;
-  }
-
-  .dialog-title__label {
-    display: flex;
     align-items: center;
     gap: 10px;
   }
 
+  // X button — pinned to top-right of the dialog surface
   .dialog-close {
+    position: absolute !important;
+    top: 14px !important;
+    right: 14px !important;
+    z-index: 10;
     width: 32px !important;
     height: 32px !important;
     line-height: 32px !important;
-    flex-shrink: 0;
-    margin-right: -8px;
 
     i {
       font-size: 16px;
