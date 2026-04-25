@@ -17,9 +17,9 @@ $bp-lg: 1024px;
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 
-  @media (min-width: $bp-md) { margin-bottom: 24px; }
+  @media (min-width: $bp-md) { margin-bottom: 20px; }
 }
 
 .page-title {
@@ -48,6 +48,86 @@ $bp-lg: 1024px;
   i { font-size: 14px; }
 }
 
+// ── Teams filter bar ──────────────────────────────────────
+.filter-bar {
+  margin-bottom: 16px;
+
+  @media (min-width: $bp-md) { margin-bottom: 20px; }
+}
+
+.filter-chips-scroll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  // Hide scrollbar on webkit
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--mat-sys-outline-variant);
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    border-color: var(--mat-sys-primary);
+    color: var(--mat-sys-primary);
+    background: var(--mat-sys-primary-container);
+  }
+
+  &--active {
+    background: var(--mat-sys-primary-container);
+    border-color: var(--mat-sys-primary);
+    color: var(--mat-sys-on-primary-container);
+    font-weight: 600;
+  }
+
+  &--new {
+    border-style: dashed;
+    color: var(--mat-sys-on-surface-variant);
+
+    i { font-size: 11px; }
+
+    &:hover {
+      border-style: solid;
+    }
+  }
+}
+
+.chip-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.filter-chip--active .chip-count {
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+}
+
 // ── State screens ─────────────────────────────────────────
 .state-center {
   display: flex;
@@ -58,6 +138,10 @@ $bp-lg: 1024px;
   min-height: 50vh;
   text-align: center;
   padding: 24px;
+
+  &--sm {
+    min-height: 200px;
+  }
 }
 
 .state-icon {
@@ -80,13 +164,29 @@ $bp-lg: 1024px;
   max-width: 300px;
 }
 
+// ── Team badge ─────────────────────────────────────────────
+.team-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+  white-space: nowrap;
+}
+
+.no-team {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 13px;
+}
+
 // ── Desktop table ─────────────────────────────────────────
 .table-card {
   background: var(--mat-sys-surface);
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06);
   overflow: hidden;
-  // Hidden on mobile — use mobile-list instead
   display: none;
 
   @media (min-width: $bp-md) { display: block; }
@@ -172,6 +272,7 @@ $bp-lg: 1024px;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding-left: 42px; // align with text, past avatar
+    flex-wrap: wrap;
+    padding-left: 42px;
   }
 }

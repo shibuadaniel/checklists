@@ -1,4 +1,11 @@
-import { TeamMember } from '../models/team.model';
+import { Team, TeamMember } from '../models/team.model';
+
+export const MOCK_TEAMS: Team[] = [
+  { id: 'team-1', name: 'Front-office' },
+  { id: 'team-2', name: 'Assistants' },
+  { id: 'team-3', name: 'Dentists' },
+  { id: 'team-4', name: 'Dental Assistants' },
+];
 
 export const MOCK_TEAM: TeamMember[] = [
   {
@@ -8,6 +15,8 @@ export const MOCK_TEAM: TeamMember[] = [
     role: 'administrator',
     status: 'active',
     dateAdded: '2026-01-15T00:00:00Z',
+    teamId: 'team-1',
+    teamName: 'Front-office',
   },
   {
     id: '2',
@@ -16,6 +25,8 @@ export const MOCK_TEAM: TeamMember[] = [
     role: 'team_lead',
     status: 'active',
     dateAdded: '2026-02-03T00:00:00Z',
+    teamId: 'team-1',
+    teamName: 'Front-office',
   },
   {
     id: '3',
@@ -24,14 +35,18 @@ export const MOCK_TEAM: TeamMember[] = [
     role: 'team_member',
     status: 'active',
     dateAdded: '2026-02-10T00:00:00Z',
+    teamId: 'team-2',
+    teamName: 'Assistants',
   },
   {
     id: '4',
-    name: 'James O\'Brien',
+    name: "James O'Brien",
     email: 'james.obrien@company.com',
     role: 'team_member',
     status: 'invited',
     dateAdded: '2026-04-20T00:00:00Z',
+    teamId: 'team-4',
+    teamName: 'Dental Assistants',
   },
   {
     id: '5',
@@ -40,6 +55,8 @@ export const MOCK_TEAM: TeamMember[] = [
     role: 'executive',
     status: 'active',
     dateAdded: '2026-01-20T00:00:00Z',
+    teamId: 'team-3',
+    teamName: 'Dentists',
   },
   {
     id: '6',
@@ -48,5 +65,7 @@ export const MOCK_TEAM: TeamMember[] = [
     role: 'team_member',
     status: 'inactive',
     dateAdded: '2026-03-01T00:00:00Z',
+    teamId: 'team-2',
+    teamName: 'Assistants',
   },
 ];

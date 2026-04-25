@@ -33,6 +33,18 @@
       </mat-select>
     </mat-form-field>
 
+    @if (teams.length > 0) {
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Team</mat-label>
+        <mat-select formControlName="teamId">
+          <mat-option value="">— No team —</mat-option>
+          @for (t of teams; track t.id) {
+            <mat-option [value]="t.id">{{ t.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+
   </form>
 </mat-dialog-content>
 

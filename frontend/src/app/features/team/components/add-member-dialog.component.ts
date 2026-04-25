@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
-import { ALL_ROLES, ROLE_LABELS, InviteMemberDto } from '../../../core/models/team.model';
+import { ALL_ROLES, ROLE_LABELS, Team, InviteMemberDto } from '../../../core/models/team.model';
 
 @Component({
   selector: 'app-add-member-dialog',
@@ -27,15 +27,18 @@ import { ALL_ROLES, ROLE_LABELS, InviteMemberDto } from '../../../core/models/te
 export class AddMemberDialogComponent {
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<AddMemberDialogComponent>);
+  readonly data = inject<{ teams: Team[] }>(MAT_DIALOG_DATA);
 
   readonly allRoles = ALL_ROLES;
   readonly roleLabels = ROLE_LABELS;
+  readonly teams: Team[] = this.data?.teams ?? [];
   sending = false;
 
   form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
     role: ['team_member' as const, Validators.required],
+    teamId: [''],
   });
 
   get nameError(): string {
@@ -58,6 +61,13 @@ export class AddMemberDialogComponent {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.sending = true;
     await new Promise(r => setTimeout(r, 200));
-    this.dialogRef.close(this.form.getRawValue() as InviteMemberDto);
+    const raw = this.form.getRawValue();
+    const dto: InviteMemberDto = {
+      name: raw.name,
+      email: raw.email,
+      role: raw.role,
+      teamId: raw.teamId || undefined,
+    };
+    this.dialogRef.close(dto);
   }
 }

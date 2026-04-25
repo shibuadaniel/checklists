@@ -15,6 +15,11 @@ export const ALL_ROLES: UserRole[] = [
   'executive',
 ];
 
+export interface Team {
+  id: string;
+  name: string;
+}
+
 export interface TeamMember {
   id: string;
   name: string;
@@ -23,10 +28,13 @@ export interface TeamMember {
   status: MemberStatus;
   avatarUrl?: string;
   dateAdded: string;
+  teamId?: string;
+  teamName?: string;
 }
 
 export interface InviteMemberDto {
   name: string;
   email: string;
   role: UserRole;
+  teamId?: string;
 }
