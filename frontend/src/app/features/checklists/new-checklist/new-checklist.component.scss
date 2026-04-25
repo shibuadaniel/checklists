@@ -167,7 +167,7 @@ $bp-lg: 1024px;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 14px;
 }
 
 .task-title-input {
@@ -205,7 +205,9 @@ $bp-lg: 1024px;
   justify-content: center;
   color: var(--mat-sys-on-surface-variant);
   transition: color 150ms ease, background 150ms ease;
-  margin-top: 2px;
+  // Align horizontally with the first line of the textarea:
+  // row padding-top (12px) + textarea padding-top (4px) + ½ line-height (10px) − ½ button (16px) = 10px
+  margin-top: 10px;
 
   i { font-size: 13px; }
 
