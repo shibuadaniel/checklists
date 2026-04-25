@@ -179,9 +179,9 @@ $bp-lg: 1024px;
   line-height: 1.5;
   color: var(--mat-sys-on-surface);
   outline: none;
-  resize: none;
+  resize: none;        // CDK handles sizing
+  overflow: hidden;    // no scrollbar — card grows instead
   font-family: inherit;
-  min-height: 48px;
 
   &::placeholder { color: var(--mat-sys-on-surface-variant); opacity: 0.7; }
 }

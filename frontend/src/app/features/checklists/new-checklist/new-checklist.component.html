@@ -78,7 +78,8 @@
                 formControlName="title"
                 placeholder="Describe the task…"
                 [attr.aria-label]="'Task ' + (i + 1) + ' description'"
-                rows="2"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="2"
                 autocomplete="off"
               ></textarea>
 
