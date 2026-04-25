@@ -38,14 +38,16 @@ $bp-lg: 1024px;
   margin: 0;
 }
 
-.add-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 40px;
+.add-icon-btn {
   flex-shrink: 0;
 
-  i { font-size: 14px; }
+  i {
+    font-size: 20px;
+    color: var(--mat-sys-on-surface-variant);
+    transition: color 150ms ease;
+  }
+
+  &:hover i { color: var(--mat-sys-primary); }
 }
 
 // ── Teams filter bar ──────────────────────────────────────
