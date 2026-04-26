@@ -10,7 +10,7 @@ $bp-lg: 1024px;
   @media (min-width: $bp-lg) { padding: 32px 32px 64px; }
 }
 
-// ── Page header ───────────────────────────────────────────
+// ── Page header ────────────────────────────────────────────
 .page-header {
   display: flex;
   align-items: flex-start;
@@ -42,30 +42,42 @@ $bp-lg: 1024px;
   margin: 0;
 }
 
-// ── Form ─────────────────────────────────────────────────
+// ── Form ──────────────────────────────────────────────────
 .checklist-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-// ── Cards ─────────────────────────────────────────────────
-.form-card {
-  background: var(--mat-sys-surface);
-  border-radius: 12px;
-  padding: 20px 16px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.05);
-
-  @media (min-width: $bp-md) { padding: 24px 20px; }
+// ── mat-card overrides ─────────────────────────────────────
+mat-card {
+  mat-card-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--mat-sys-on-surface-variant);
+  }
 }
 
-.card-heading {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+// Tasks card header: title + count badge side-by-side, with bottom breathing room
+mat-card mat-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tasks-card mat-card-header {
+  padding-bottom: 12px;
+}
+
+.task-count {
+  font-size: 12px;
+  font-weight: 500;
   color: var(--mat-sys-on-surface-variant);
-  margin: 0 0 16px;
+  background: var(--mat-sys-surface-variant);
+  padding: 2px 8px;
+  border-radius: 10px;
 }
 
 .full-width { width: 100%; }
@@ -120,25 +132,73 @@ $bp-lg: 1024px;
 
 .due-date-field { margin-top: 4px; }
 
-// ── Tasks section ─────────────────────────────────────────
-.tasks-header {
+// ── Assignment section ─────────────────────────────────────
+.assignment-seg {
+  display: flex;
+  background: var(--mat-sys-surface-variant);
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 20px;
+  gap: 0;
+}
+
+.assignment-btn {
+  flex: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-
-  .card-heading { margin: 0; }
-}
-
-.task-count {
-  font-size: 12px;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 4px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
   font-weight: 500;
   color: var(--mat-sys-on-surface-variant);
-  background: var(--mat-sys-surface-variant);
-  padding: 2px 8px;
-  border-radius: 10px;
+  transition: background 150ms ease, color 150ms ease;
+
+  i { font-size: 13px; }
+
+  &:hover:not(&--active) {
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+  }
+
+  &--active {
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-primary);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: -2px;
+  }
 }
 
+.assignment-description {
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0 0 12px;
+}
+
+.assignment-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--mat-sys-surface-variant);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+  line-height: 1.5;
+
+  i { font-size: 13px; margin-top: 1px; flex-shrink: 0; }
+}
+
+// ── Tasks section ──────────────────────────────────────────
 .task-list {
   list-style: none;
   margin: 0 0 12px;
@@ -148,13 +208,12 @@ $bp-lg: 1024px;
   gap: 12px;
 }
 
-// Outlined card — M3 pattern for primary interactive containers
 .task-card {
   position: relative;
   background: var(--mat-sys-surface);
   border: 1.5px solid var(--mat-sys-outline-variant);
   border-radius: 12px;
-  padding: 14px 16px 4px 16px; // uniform horizontal padding
+  padding: 14px 16px 4px 16px;
   transition: border-color 150ms ease;
 
   &:focus-within {
@@ -168,7 +227,6 @@ $bp-lg: 1024px;
   width: 100%;
   border: none;
   background: transparent;
-  // Right padding keeps text clear of the absolutely-positioned X button
   padding: 0 32px 10px 0;
   font-size: 14px;
   line-height: 1.6;
@@ -185,10 +243,9 @@ $bp-lg: 1024px;
 }
 
 .task-divider {
-  margin: 0 -16px; // bleeds edge-to-edge (matches uniform card padding)
+  margin: 0 -16px;
 }
 
-// Borderless assignee row — icon + bare mat-select, no form-field wrapper
 .task-assignee-row {
   display: flex;
   align-items: center;
@@ -202,13 +259,11 @@ $bp-lg: 1024px;
   flex-shrink: 0;
 }
 
-// mat-select used without mat-form-field — strip all chrome
 .task-assignee-select {
   flex: 1;
   font-size: 13px;
   color: var(--mat-sys-on-surface-variant);
 
-  // Remove the underline and background that mat-select adds by default
   &.mat-mdc-select {
     background: transparent;
   }
@@ -263,7 +318,35 @@ $bp-lg: 1024px;
   }
 }
 
-// ── Form actions ──────────────────────────────────────────
+// ── Member option in assignee dropdown ─────────────────────
+.member-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &__avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__team {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--mat-sys-on-surface-variant);
+    opacity: 0.8;
+  }
+}
+
+// ── Form actions ───────────────────────────────────────────
 .form-actions {
   display: flex;
   gap: 12px;

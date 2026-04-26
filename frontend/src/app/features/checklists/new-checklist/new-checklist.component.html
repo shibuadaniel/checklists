@@ -7,126 +7,195 @@
     </button>
     <div>
       <h1 class="page-title">New Checklist</h1>
-      <p class="page-subtitle">Set a title, frequency, and add tasks</p>
+      <p class="page-subtitle">Set a title, frequency, assignment, and add tasks</p>
     </div>
   </div>
 
   <form [formGroup]="form" novalidate class="checklist-form" (ngSubmit)="save()">
 
     <!-- Card: Details -->
-    <section class="form-card" aria-label="Checklist details">
-      <h2 class="card-heading">Details</h2>
+    <mat-card appearance="outlined" aria-label="Checklist details">
+      <mat-card-header>
+        <mat-card-title>Details</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
 
-      <!-- Title -->
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Title</mat-label>
-        <input
-          matInput
-          formControlName="title"
-          placeholder="e.g. Morning opening checklist"
-          autocomplete="off"
-        />
-        @if (form.controls.title.invalid && form.controls.title.touched) {
-          <mat-error>{{ titleError }}</mat-error>
-        }
-      </mat-form-field>
-
-      <!-- Recurrence segmented control -->
-      <div class="field-label">How often</div>
-      <div class="recurrence-seg" role="group" aria-label="Recurrence frequency">
-        @for (opt of recurrenceOptions; track opt.value) {
-          <button
-            type="button"
-            class="recurrence-btn"
-            [class.recurrence-btn--active]="form.controls.recurrence.value === opt.value"
-            [attr.aria-pressed]="form.controls.recurrence.value === opt.value"
-            (click)="setRecurrence(opt.value)">
-            {{ opt.label }}
-          </button>
-        }
-      </div>
-
-      <!-- Due date (auto-filled, editable) -->
-      <mat-form-field appearance="outline" class="full-width due-date-field">
-        <mat-label>Due date</mat-label>
-        <input matInput type="date" formControlName="dueDate" />
-        <mat-hint>
-          @switch (form.controls.recurrence.value) {
-            @case ('daily')   { Due by end of day ({{ settingsService.settings().endOfDay }}) }
-            @case ('weekly')  { Due by Sunday of this week }
-            @case ('monthly') { Due by end of this month }
-            @case ('yearly')  { Due by end of this year }
+        <!-- Title -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title</mat-label>
+          <input
+            matInput
+            formControlName="title"
+            placeholder="e.g. Morning opening checklist"
+            autocomplete="off"
+          />
+          @if (form.controls.title.invalid && form.controls.title.touched) {
+            <mat-error>{{ titleError }}</mat-error>
           }
-        </mat-hint>
-      </mat-form-field>
-    </section>
+        </mat-form-field>
 
-    <!-- Card: Tasks -->
-    <section class="form-card" aria-label="Checklist tasks" formArrayName="tasks">
-      <div class="tasks-header">
-        <h2 class="card-heading">Tasks</h2>
-        <span class="task-count">{{ tasksArray.length }} task{{ tasksArray.length === 1 ? '' : 's' }}</span>
-      </div>
-
-      <ul class="task-list" aria-label="Task list">
-        @for (taskGroup of tasksArray.controls; track $index; let i = $index) {
-          <li class="task-card" [formGroupName]="i">
-
-            <!-- Close button — pinned top-right of card -->
+        <!-- Recurrence segmented control -->
+        <div class="field-label">How often</div>
+        <div class="recurrence-seg" role="group" aria-label="Recurrence frequency">
+          @for (opt of recurrenceOptions; track opt.value) {
             <button
               type="button"
-              class="task-remove"
-              (click)="removeTask(i)"
-              [disabled]="tasksArray.length === 1"
-              [attr.aria-label]="'Remove task ' + (i + 1)"
-              matTooltip="Remove task">
-              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+              class="recurrence-btn"
+              [class.recurrence-btn--active]="form.controls.recurrence.value === opt.value"
+              [attr.aria-pressed]="form.controls.recurrence.value === opt.value"
+              (click)="setRecurrence(opt.value)">
+              {{ opt.label }}
             </button>
+          }
+        </div>
 
-            <!-- Description -->
-            <textarea
-              class="task-title-input"
-              formControlName="title"
-              placeholder="Describe the task…"
-              [attr.aria-label]="'Task ' + (i + 1) + ' description'"
-              cdkTextareaAutosize
-              cdkAutosizeMinRows="2"
-              autocomplete="off"
-            ></textarea>
+        <!-- Due date (auto-filled, editable) -->
+        <mat-form-field appearance="outline" class="full-width due-date-field">
+          <mat-label>Due date</mat-label>
+          <input matInput type="date" formControlName="dueDate" />
+          <mat-hint>
+            @switch (form.controls.recurrence.value) {
+              @case ('daily')   { Due by end of day ({{ settingsService.settings().endOfDay }}) }
+              @case ('weekly')  { Due by Sunday of this week }
+              @case ('monthly') { Due by end of this month }
+              @case ('yearly')  { Due by end of this year }
+            }
+          </mat-hint>
+        </mat-form-field>
 
-            <mat-divider class="task-divider" />
+      </mat-card-content>
+    </mat-card>
 
-            <!-- Assignee row — borderless, sits inside the outlined card -->
-            <div class="task-assignee-row">
-              <i class="fa-solid fa-user-tag task-assignee-icon" aria-hidden="true"></i>
-              <mat-select
-                formControlName="assigneeId"
-                class="task-assignee-select"
-                [aria-label]="'Assign task ' + (i + 1) + ' to a team member'"
-                panelClass="assignee-panel">
-                <mat-option value="">Unassigned</mat-option>
-                @for (m of members(); track m.id) {
-                  <mat-option [value]="m.id">
-                    <div class="member-option">
-                      <div class="member-option__avatar" aria-hidden="true">
-                        {{ m.name.slice(0, 2).toUpperCase() }}
-                      </div>
-                      <span>{{ m.name }}</span>
-                    </div>
-                  </mat-option>
-                }
-              </mat-select>
-            </div>
+    <!-- Card: Assignment -->
+    <mat-card appearance="outlined" aria-label="Assignment">
+      <mat-card-header>
+        <mat-card-title>Assignment</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
 
-          </li>
+        <!-- Mode toggle -->
+        <div class="field-label">Assign to</div>
+        <div class="assignment-seg" role="group" aria-label="Assignment mode">
+          <button
+            type="button"
+            class="assignment-btn"
+            [class.assignment-btn--active]="assignmentMode() === 'team'"
+            [attr.aria-pressed]="assignmentMode() === 'team'"
+            (click)="setAssignmentMode('team')">
+            <i class="fa-solid fa-users" aria-hidden="true"></i>
+            Team
+          </button>
+          <button
+            type="button"
+            class="assignment-btn"
+            [class.assignment-btn--active]="assignmentMode() === 'member'"
+            [attr.aria-pressed]="assignmentMode() === 'member'"
+            (click)="setAssignmentMode('member')">
+            <i class="fa-solid fa-user" aria-hidden="true"></i>
+            Members
+          </button>
+        </div>
+
+        <!-- Team dropdown — visible in team mode -->
+        @if (assignmentMode() === 'team') {
+          <p class="mat-body-small assignment-description">
+            Any member can complete these tasks.
+          </p>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Team</mat-label>
+            <mat-select formControlName="assignedTeamId">
+              @for (t of teams(); track t.id) {
+                <mat-option [value]="t.id">{{ t.name }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
         }
-      </ul>
 
-      <button type="button" class="add-task-btn" (click)="addTask()">
-        <i class="fa-solid fa-plus" aria-hidden="true"></i>
-        Add task
-      </button>
-    </section>
+        <!-- Member mode hint -->
+        @if (assignmentMode() === 'member') {
+          <p class="assignment-hint">
+            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+            Assign each task to a specific member below. At least one task must be assigned.
+          </p>
+        }
+
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Card: Tasks -->
+    <mat-card appearance="outlined" aria-label="Checklist tasks" class="tasks-card">
+      <mat-card-header>
+        <mat-card-title>Tasks</mat-card-title>
+        <span class="task-count">{{ tasksArray.length }} task{{ tasksArray.length === 1 ? '' : 's' }}</span>
+      </mat-card-header>
+      <mat-card-content formArrayName="tasks">
+
+        <ul class="task-list" aria-label="Task list">
+          @for (taskGroup of tasksArray.controls; track $index; let i = $index) {
+            <li class="task-card" [formGroupName]="i">
+
+              <!-- Close button — pinned top-right of card -->
+              <button
+                type="button"
+                class="task-remove"
+                (click)="removeTask(i)"
+                [disabled]="tasksArray.length === 1"
+                [attr.aria-label]="'Remove task ' + (i + 1)"
+                matTooltip="Remove task">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+              </button>
+
+              <!-- Description -->
+              <textarea
+                class="task-title-input"
+                formControlName="title"
+                placeholder="Describe the task…"
+                [attr.aria-label]="'Task ' + (i + 1) + ' description'"
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="2"
+                autocomplete="off"
+              ></textarea>
+
+              @if (assignmentMode() === 'member') {
+                <mat-divider class="task-divider" />
+
+                <!-- Assignee row — borderless, sits inside the outlined card -->
+                <div class="task-assignee-row">
+                  <i class="fa-solid fa-user-tag task-assignee-icon" aria-hidden="true"></i>
+                  <mat-select
+                    formControlName="assigneeId"
+                    class="task-assignee-select"
+                    [aria-label]="'Assign task ' + (i + 1) + ' to a team member'"
+                    panelClass="assignee-panel">
+                    <mat-option value="">Unassigned</mat-option>
+                    @for (m of members(); track m.id) {
+                      <mat-option [value]="m.id">
+                        <div class="member-option">
+                          <div class="member-option__avatar" aria-hidden="true">
+                            {{ m.name.slice(0, 2).toUpperCase() }}
+                          </div>
+                          <span>{{ m.name }}</span>
+                          @if (m.teamName) {
+                            <span class="member-option__team">{{ m.teamName }}</span>
+                          }
+                        </div>
+                      </mat-option>
+                    }
+                  </mat-select>
+                </div>
+              }
+
+            </li>
+          }
+        </ul>
+
+        <button type="button" class="add-task-btn" (click)="addTask()">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          Add task
+        </button>
+
+      </mat-card-content>
+    </mat-card>
 
     <!-- Actions -->
     <div class="form-actions">

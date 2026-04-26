@@ -8,6 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -18,9 +19,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatDividerModule } from '@angular/material/divider';
 
-import { TeamMember } from '../../../core/models/team.model';
-import { RecurrenceType, CreateChecklistDto, CreateChecklistTaskDto } from '../../../core/models/checklist.model';
-import { MOCK_TEAM } from '../../../core/mock-data/team.mock';
+import { Team, TeamMember } from '../../../core/models/team.model';
+import { AssignmentMode, RecurrenceType, CreateChecklistDto, CreateChecklistTaskDto } from '../../../core/models/checklist.model';
+import { MOCK_TEAM, MOCK_TEAMS } from '../../../core/mock-data/team.mock';
 import { SettingsService } from '../../../core/services/settings.service';
 import { environment } from '../../../../environments/environment.development';
 
@@ -42,6 +43,7 @@ const RECURRENCE_OPTIONS: { value: RecurrenceType; label: string }[] = [
   imports: [
     ReactiveFormsModule,
     TextFieldModule,
+    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -62,13 +64,16 @@ export class NewChecklistComponent implements OnInit {
 
   readonly saving = signal(false);
   readonly members = signal<TeamMember[]>([]);
+  readonly teams = signal<Team[]>([]);
+  readonly assignmentMode = signal<AssignmentMode>('team');
   readonly recurrenceOptions = RECURRENCE_OPTIONS;
 
   form = this.fb.nonNullable.group({
-    title:      ['', [Validators.required, Validators.minLength(2)]],
-    recurrence: ['daily' as RecurrenceType, Validators.required],
-    dueDate:    [this.settingsService.dueDateFor('daily'), Validators.required],
-    tasks:      this.fb.array<FormGroup<TaskFormGroup>>([]),
+    title:          ['', [Validators.required, Validators.minLength(2)]],
+    recurrence:     ['daily' as RecurrenceType, Validators.required],
+    dueDate:        [this.settingsService.dueDateFor('daily'), Validators.required],
+    assignedTeamId: [''],
+    tasks:          this.fb.array<FormGroup<TaskFormGroup>>([]),
   });
 
   get tasksArray(): FormArray<FormGroup<TaskFormGroup>> {
@@ -85,6 +90,7 @@ export class NewChecklistComponent implements OnInit {
   ngOnInit(): void {
     if (environment.useMock) {
       this.members.set(MOCK_TEAM.filter(m => m.status === 'active'));
+      this.teams.set(MOCK_TEAMS);
     }
     this.addTask();
 
@@ -122,6 +128,15 @@ export class NewChecklistComponent implements OnInit {
     this.form.controls.recurrence.setValue(value);
   }
 
+  setAssignmentMode(mode: AssignmentMode): void {
+    this.assignmentMode.set(mode);
+    if (mode === 'team') {
+      this.tasksArray.controls.forEach(g => g.controls.assigneeId.setValue(''));
+    } else {
+      this.form.controls.assignedTeamId.setValue('');
+    }
+  }
+
   async save(): Promise<void> {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
 
@@ -135,11 +150,23 @@ export class NewChecklistComponent implements OnInit {
       return;
     }
 
+    const mode = this.assignmentMode();
+    if (mode === 'team' && !raw.assignedTeamId) {
+      this.snackBar.open('Please select a team to assign this checklist to.', '', { duration: 3000 });
+      return;
+    }
+    if (mode === 'member' && tasks.every(t => !t.assigneeId)) {
+      this.snackBar.open('Please assign at least one task to a team member.', '', { duration: 3000 });
+      return;
+    }
+
     const dto: CreateChecklistDto = {
-      title:      raw.title.trim(),
-      recurrence: raw.recurrence,
-      dueDate:    raw.dueDate,
+      title:          raw.title.trim(),
+      recurrence:     raw.recurrence,
+      dueDate:        raw.dueDate,
       tasks,
+      assignmentMode: mode,
+      assignedTeamId: mode === 'team' ? raw.assignedTeamId : undefined,
     };
 
     this.saving.set(true);

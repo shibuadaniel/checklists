@@ -1,0 +1,44 @@
+---
+description: Angular Material component usage standards — inventory first, no spec overrides
+alwaysApply: true
+---
+
+# Angular Material Usage
+
+## Inventory Before Building
+
+Before implementing any UI feature, audit which Material components are already in use:
+
+```bash
+grep -rh "from '@angular/material" src --include="*.ts" | sort -u
+```
+
+Then use the correct component from that list. Do not hand-roll a component that Material already provides.
+
+## Components Currently in Use
+
+| Module | Use for |
+|---|---|
+| `MatCardModule` | Section containers / cards |
+| `MatButtonModule` | All buttons (flat, stroked, icon) |
+| `MatFormFieldModule` + `MatInputModule` | Text inputs |
+| `MatSelectModule` | Dropdowns |
+| `MatDialogModule` | Modals |
+| `MatDividerModule` | Horizontal rules |
+| `MatSidenavModule` | Side navigation drawer |
+| `MatTableModule` | Data tables |
+| `MatSnackBarModule` | Toast notifications |
+| `MatProgressSpinnerModule` | Loading spinners |
+| `MatProgressBarModule` | Progress bars |
+| `MatTooltipModule` | Tooltips |
+| `MatIconModule` | Icons |
+| `MatRippleModule` | Ripple effect |
+
+## Rules
+
+- **Use `mat-card` + `mat-card-header` + `mat-card-content`** for any card/section container. Never use a plain `<div>` with manual padding/shadow to replicate a card.
+- **Do not override Material component spacing.** If spacing looks wrong, the layout structure is wrong — fix the structure, not the spec.
+- **Do not use `::ng-deep`, negative margins, or `!important`** to fight Material's internal layout.
+- **`mat-hint` lives inside `mat-form-field`** — do not move it outside to work around spacing.
+- **`appearance="outlined"`** is the standard form field style for this project.
+- Before adding a new Material module, check if it's already imported in a shared module or the component's existing imports.

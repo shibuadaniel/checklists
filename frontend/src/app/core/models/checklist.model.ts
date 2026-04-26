@@ -1,5 +1,6 @@
 export type ChecklistStatus = 'active' | 'completed' | 'overdue' | 'paused';
 export type RecurrenceType = 'daily' | 'weekly' | 'monthly' | 'yearly';
+export type AssignmentMode = 'team' | 'member';
 
 export interface ChecklistTask {
   id: string;
@@ -18,6 +19,7 @@ export interface Checklist {
   completedTasks: number;
   overdueTasks: number;
   assignedTeam?: string;
+  assignedTeamId?: string;
   assigneeId?: string;
   assigneeName?: string;
   dueDate?: string;
@@ -36,6 +38,8 @@ export interface CreateChecklistDto {
   recurrence: RecurrenceType;
   dueDate: string;         // YYYY-MM-DD, auto-calculated but user-editable
   tasks: CreateChecklistTaskDto[];
+  assignmentMode: AssignmentMode;
+  assignedTeamId?: string; // set when assignmentMode === 'team'
 }
 
 export interface DashboardSummary {
