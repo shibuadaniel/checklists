@@ -1,0 +1,204 @@
+$bp-md: 768px;
+
+.my-tasks-page {
+  padding: 16px 12px 48px;
+  max-width: 720px;
+  margin: 0 auto;
+
+  @media (min-width: $bp-md) { padding: 24px 20px 56px; }
+}
+
+// ── Page header ────────────────────────────────────────────
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--mat-sys-on-surface);
+  margin: 0;
+
+  @media (min-width: $bp-md) { font-size: 24px; }
+}
+
+.pending-badge {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+  background: var(--mat-sys-surface-variant);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+// ── Group segmented control ────────────────────────────────
+.group-seg {
+  display: flex;
+  background: var(--mat-sys-surface-variant);
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 20px;
+}
+
+.group-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 4px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+  transition: background 150ms ease, color 150ms ease;
+
+  i { font-size: 13px; }
+
+  &:hover:not(&--active) {
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+  }
+
+  &--active {
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-primary);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: -2px;
+  }
+}
+
+// ── Group cards ────────────────────────────────────────────
+.group-card {
+  margin-bottom: 16px;
+
+  &--done { opacity: 0.72; }
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.group-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.group-count {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+  background: var(--mat-sys-surface-variant);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+// ── Task list ──────────────────────────────────────────────
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.task-row {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  &:last-child { border-bottom: none; }
+
+  &--done {
+    .task-title {
+      text-decoration: line-through;
+      color: var(--mat-sys-on-surface-variant);
+    }
+  }
+}
+
+// mat-checkbox fills remaining row space; label area holds title
+.task-check {
+  flex: 1;
+  min-width: 0;
+}
+
+// Stacked label used in "by status" view
+.task-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.task-title {
+  font-size: 14px;
+  color: var(--mat-sys-on-surface);
+  line-height: 1.4;
+  white-space: normal;
+}
+
+.task-checklist-name {
+  font-size: 11px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.task-due {
+  font-size: 11px;
+  color: var(--mat-sys-on-surface-variant);
+  white-space: nowrap;
+  margin-left: 8px;
+  flex-shrink: 0;
+
+  &--overdue {
+    color: var(--mat-sys-error);
+    font-weight: 500;
+  }
+}
+
+.section-divider {
+  margin: 6px 0;
+}
+
+// ── Empty state ────────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 64px 24px;
+  text-align: center;
+  gap: 8px;
+
+  &__icon {
+    font-size: 48px;
+    color: var(--mat-sys-outline);
+    margin-bottom: 8px;
+  }
+
+  &__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+    margin: 0;
+  }
+
+  &__sub {
+    font-size: 13px;
+    color: var(--mat-sys-on-surface-variant);
+    margin: 0;
+  }
+}

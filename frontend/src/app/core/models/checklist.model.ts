@@ -42,6 +42,16 @@ export interface CreateChecklistDto {
   assignedTeamId?: string; // set when assignmentMode === 'team'
 }
 
+export interface MyTask {
+  id: string;
+  title: string;
+  completed: boolean;
+  checklistId: string;
+  checklistName: string;
+  dueDate?: string;
+  assigneeId: string;
+}
+
 export interface DashboardSummary {
   totalActive: number;
   completedToday: number;

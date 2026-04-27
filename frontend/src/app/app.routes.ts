@@ -40,6 +40,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'tasks',
+        loadComponent: () =>
+          import('./features/tasks/my-tasks/my-tasks.component').then(
+            m => m.MyTasksComponent,
+          ),
+      },
+      {
         // Team page: visible to team leads, admins, and executives
         path: 'team',
         canActivate: [roleGuard('administrator', 'executive', 'team_lead')],

@@ -1,0 +1,166 @@
+<div class="my-tasks-page">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h1 class="page-title">My Tasks</h1>
+    @if (tasks().length > 0) {
+      <span class="pending-badge">{{ pendingTasks().length }} pending</span>
+    }
+  </div>
+
+  <!-- Group mode segmented control -->
+  <div class="group-seg" role="group" aria-label="Group tasks by">
+    <button
+      type="button"
+      class="group-btn"
+      [class.group-btn--active]="groupMode() === 'checklist'"
+      [attr.aria-pressed]="groupMode() === 'checklist'"
+      (click)="setGroupMode('checklist')">
+      <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+      By Checklist
+    </button>
+    <button
+      type="button"
+      class="group-btn"
+      [class.group-btn--active]="groupMode() === 'status'"
+      [attr.aria-pressed]="groupMode() === 'status'"
+      (click)="setGroupMode('status')">
+      <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
+      By Status
+    </button>
+  </div>
+
+  <!-- Empty state -->
+  @if (tasks().length === 0) {
+    <div class="empty-state">
+      <i class="fa-solid fa-list-check empty-state__icon" aria-hidden="true"></i>
+      <p class="empty-state__title">No tasks assigned to you</p>
+      <p class="empty-state__sub">When tasks are assigned to you, they'll appear here.</p>
+    </div>
+  }
+
+  <!-- ── By Checklist view ─────────────────────────────── -->
+  @if (groupMode() === 'checklist' && tasks().length > 0) {
+    @for (group of tasksByChecklist(); track group.checklistId) {
+      <mat-card appearance="outlined" class="group-card">
+        <mat-card-content>
+
+          <div class="group-header">
+            <span class="group-name">{{ group.checklistName }}</span>
+            <span class="group-count">
+              {{ group.pending.length + group.completed.length }}
+            </span>
+          </div>
+
+          <ul class="task-list" [attr.aria-label]="group.checklistName + ' tasks'">
+            @for (task of group.pending; track task.id) {
+              <li class="task-row">
+                <mat-checkbox
+                  class="task-check"
+                  [checked]="task.completed"
+                  (change)="toggleTask(task)"
+                  [attr.aria-label]="task.title">
+                  <span class="task-title">{{ task.title }}</span>
+                </mat-checkbox>
+                @if (task.dueDate) {
+                  <span class="task-due" [class.task-due--overdue]="isOverdue(task.dueDate)">
+                    {{ formatDueDate(task.dueDate) }}
+                  </span>
+                }
+              </li>
+            }
+
+            @if (group.completed.length > 0) {
+              @if (group.pending.length > 0) {
+                <mat-divider class="section-divider" />
+              }
+              @for (task of group.completed; track task.id) {
+                <li class="task-row task-row--done">
+                  <mat-checkbox
+                    class="task-check"
+                    [checked]="task.completed"
+                    (change)="toggleTask(task)"
+                    [attr.aria-label]="task.title">
+                    <span class="task-title">{{ task.title }}</span>
+                  </mat-checkbox>
+                </li>
+              }
+            }
+          </ul>
+
+        </mat-card-content>
+      </mat-card>
+    }
+  }
+
+  <!-- ── By Status view ───────────────────────────────── -->
+  @if (groupMode() === 'status' && tasks().length > 0) {
+
+    @if (pendingTasks().length > 0) {
+      <mat-card appearance="outlined" class="group-card">
+        <mat-card-content>
+
+          <div class="group-header">
+            <span class="group-name">Pending</span>
+            <span class="group-count">{{ pendingTasks().length }}</span>
+          </div>
+
+          <ul class="task-list" aria-label="Pending tasks">
+            @for (task of pendingTasks(); track task.id) {
+              <li class="task-row">
+                <mat-checkbox
+                  class="task-check"
+                  [checked]="task.completed"
+                  (change)="toggleTask(task)"
+                  [attr.aria-label]="task.title">
+                  <span class="task-label">
+                    <span class="task-title">{{ task.title }}</span>
+                    <span class="task-checklist-name">{{ task.checklistName }}</span>
+                  </span>
+                </mat-checkbox>
+                @if (task.dueDate) {
+                  <span class="task-due" [class.task-due--overdue]="isOverdue(task.dueDate)">
+                    {{ formatDueDate(task.dueDate) }}
+                  </span>
+                }
+              </li>
+            }
+          </ul>
+
+        </mat-card-content>
+      </mat-card>
+    }
+
+    @if (completedTasks().length > 0) {
+      <mat-card appearance="outlined" class="group-card group-card--done">
+        <mat-card-content>
+
+          <div class="group-header">
+            <span class="group-name">Completed</span>
+            <span class="group-count">{{ completedTasks().length }}</span>
+          </div>
+
+          <ul class="task-list" aria-label="Completed tasks">
+            @for (task of completedTasks(); track task.id) {
+              <li class="task-row task-row--done">
+                <mat-checkbox
+                  class="task-check"
+                  [checked]="task.completed"
+                  (change)="toggleTask(task)"
+                  [attr.aria-label]="task.title">
+                  <span class="task-label">
+                    <span class="task-title">{{ task.title }}</span>
+                    <span class="task-checklist-name">{{ task.checklistName }}</span>
+                  </span>
+                </mat-checkbox>
+              </li>
+            }
+          </ul>
+
+        </mat-card-content>
+      </mat-card>
+    }
+
+  }
+
+</div>
