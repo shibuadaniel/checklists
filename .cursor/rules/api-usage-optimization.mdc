@@ -1,0 +1,30 @@
+---
+description: Minimize token and tool usage—stay within Cursor / model limits
+alwaysApply: true
+---
+
+# API and Context Usage
+
+Optimize every turn so the user’s included usage and rate limits go further. This rule applies to all work in this repo.
+
+## Responses
+
+- Keep answers as short as clarity allows; no filler, repetition, or “engagement” closings.
+- Prefer a single well-scoped follow-up over long speculative lists of options.
+- Reuse what the user or prior turns already provided instead of re-quoting or re-fetching the same content.
+
+## Tools and file access
+
+- Prefer targeted search (`grep`, codebase search) over opening whole directories or very large files.
+- Read only the regions needed (offsets/limits) unless the whole file is required.
+- Do not re-read a file in the same task without a reason (e.g. it changed or prior read failed).
+- Batch independent reads/searches in parallel when it saves round-trips.
+- Skip extra terminal commands, MCP calls, and web fetches unless they are needed to complete the task.
+
+## When stuck
+
+- One precise clarifying question is better than multiple wrong attempts that burn context.
+
+## Scope
+
+- Do not change product behavior, tests, or docs solely to “save tokens.” Optimize *how* the work is done, not *whether* the user’s request is done properly.
