@@ -1,0 +1,76 @@
+$bp-md: 768px;
+$bp-lg: 1024px;
+
+.checklists-index-page {
+  padding: 16px 12px 48px;
+  max-width: 720px;
+  margin: 0 auto;
+
+  @media (min-width: $bp-md) {
+    padding: 24px 20px 56px;
+  }
+
+  @media (min-width: $bp-lg) {
+    padding: 32px 32px 64px;
+  }
+}
+
+.page-header {
+  margin-bottom: 20px;
+
+  @media (min-width: $bp-md) {
+    margin-bottom: 28px;
+  }
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--mat-sys-on-surface);
+  margin: 0 0 4px;
+}
+
+.page-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--mat-sys-on-surface-variant);
+  line-height: 1.4;
+}
+
+.hub-card mat-card-header {
+  padding-bottom: 0;
+}
+
+.empty-copy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.checklist-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.checklist-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 0;
+}
+
+.checklist-row__title {
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+.checklist-row__meta {
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.checklist-row__sep {
+  margin: 0 4px;
+}

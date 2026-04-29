@@ -20,9 +20,15 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatDividerModule } from '@angular/material/divider';
 
 import { Team, TeamMember } from '../../../core/models/team.model';
-import { AssignmentMode, RecurrenceType, CreateChecklistDto, CreateChecklistTaskDto } from '../../../core/models/checklist.model';
+import {
+  AssignmentMode,
+  RecurrenceType,
+  CreateChecklistDto,
+  CreateChecklistTaskDto,
+} from '../../../core/models/checklist.model';
 import { MOCK_TEAM, MOCK_TEAMS } from '../../../core/mock-data/team.mock';
 import { SettingsService } from '../../../core/services/settings.service';
+import { ChecklistModeService } from '../../../core/services/checklist-mode.service';
 import { environment } from '../../../../environments/environment.development';
 
 interface TaskFormGroup {
@@ -61,6 +67,7 @@ export class NewChecklistComponent implements OnInit {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   readonly settingsService = inject(SettingsService);
+  readonly checklistModeService = inject(ChecklistModeService);
 
   readonly saving = signal(false);
   readonly members = signal<TeamMember[]>([]);
@@ -150,23 +157,29 @@ export class NewChecklistComponent implements OnInit {
       return;
     }
 
+    const checklistMode = this.checklistModeService.mode();
     const mode = this.assignmentMode();
-    if (mode === 'team' && !raw.assignedTeamId) {
+    if (checklistMode === 'practice' && mode === 'team' && !raw.assignedTeamId) {
       this.snackBar.open('Please select a team to assign this checklist to.', '', { duration: 3000 });
       return;
     }
-    if (mode === 'member' && tasks.every(t => !t.assigneeId)) {
+    if (checklistMode === 'practice' && mode === 'member' && tasks.every(t => !t.assigneeId)) {
       this.snackBar.open('Please assign at least one task to a team member.', '', { duration: 3000 });
       return;
     }
+
+    const normalizedTasks = checklistMode === 'personal'
+      ? tasks.map(t => ({ ...t, assigneeId: undefined }))
+      : tasks;
 
     const dto: CreateChecklistDto = {
       title:          raw.title.trim(),
       recurrence:     raw.recurrence,
       dueDate:        raw.dueDate,
-      tasks,
-      assignmentMode: mode,
-      assignedTeamId: mode === 'team' ? raw.assignedTeamId : undefined,
+      tasks: normalizedTasks,
+      checklistMode,
+      assignmentMode: checklistMode === 'practice' ? mode : undefined,
+      assignedTeamId: checklistMode === 'practice' && mode === 'team' ? raw.assignedTeamId : undefined,
     };
 
     this.saving.set(true);

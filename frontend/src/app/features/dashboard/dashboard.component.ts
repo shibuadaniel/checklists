@@ -16,6 +16,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { DashboardSummary, Checklist } from '../../core/models/checklist.model';
 import { RecurrenceType } from '../../core/models/checklist.model';
 import { MOCK_DASHBOARD } from '../../core/mock-data/dashboard.mock';
+import { ChecklistModeService } from '../../core/services/checklist-mode.service';
 import { environment } from '../../../environments/environment.development';
 
 type PageState = 'loading' | 'empty' | 'error' | 'success';
@@ -42,6 +43,7 @@ type PageState = 'loading' | 'empty' | 'error' | 'success';
 export class DashboardComponent implements OnInit {
   private router = inject(Router);
   private auth = inject(AuthService);
+  readonly checklistModeService = inject(ChecklistModeService);
 
   readonly state = signal<PageState>('loading');
   readonly data = signal<DashboardSummary | null>(null);
@@ -60,9 +62,19 @@ export class DashboardComponent implements OnInit {
   readonly filteredChecklists = computed(() => {
     const summary = this.data();
     if (!summary) return [];
+    const mode = this.checklistModeService.mode();
+    const modeScoped = summary.checklists.filter(c =>
+      mode === 'personal' ? c.checklistMode === 'personal' : c.checklistMode !== 'personal',
+    );
     const filter = this.recurrenceFilter();
-    if (filter === 'all') return summary.checklists;
-    return summary.checklists.filter(c => c.recurrence === filter);
+    if (filter === 'all') return modeScoped;
+    return modeScoped.filter(c => c.recurrence === filter);
+  });
+
+  readonly personalChecklists = computed(() => {
+    const summary = this.data();
+    if (!summary) return [];
+    return summary.checklists.filter(c => c.checklistMode === 'personal');
   });
 
   get userName(): string {
@@ -72,6 +84,10 @@ export class DashboardComponent implements OnInit {
 
   get isTeamMember(): boolean {
     return this.auth.currentUser()?.role === 'team_member';
+  }
+
+  get isPersonalMode(): boolean {
+    return this.checklistModeService.mode() === 'personal';
   }
 
   donutData: ChartData<'doughnut'> = { labels: [], datasets: [] };

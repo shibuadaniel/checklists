@@ -1,0 +1,50 @@
+<div class="checklists-index-page">
+
+  <div class="page-header">
+    <h1 class="page-title">Checklists</h1>
+    <p class="page-subtitle">Browse your checklists or create a new one.</p>
+  </div>
+
+  @if (checklists().length === 0) {
+    <mat-card appearance="outlined" class="hub-card" aria-label="No checklists yet">
+      <mat-card-header>
+        <mat-card-title>No checklists yet</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p class="empty-copy">
+          When you create a checklist, it will show up here. Use the circle-plus icon in the header.
+        </p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <mat-card appearance="outlined" class="hub-card" aria-label="Your checklists">
+      <mat-card-header>
+        <mat-card-title>Your checklists</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <ul class="checklist-list" role="list">
+          @for (c of checklists(); track c.id) {
+            <li class="checklist-row" role="listitem">
+              <span class="checklist-row__title">{{ c.name }}</span>
+              <span class="checklist-row__meta">
+                {{ c.recurrence | titlecase }}
+                @if (c.checklistMode) {
+                  <span class="checklist-row__sep" aria-hidden="true">·</span>
+                  <span>{{ c.checklistMode | titlecase }}</span>
+                }
+                @if (c.assignedTeam) {
+                  <span class="checklist-row__sep" aria-hidden="true">·</span>
+                  <span>{{ c.assignedTeam }}</span>
+                }
+              </span>
+            </li>
+            @if (!$last) {
+              <mat-divider />
+            }
+          }
+        </ul>
+      </mat-card-content>
+    </mat-card>
+  }
+
+</div>

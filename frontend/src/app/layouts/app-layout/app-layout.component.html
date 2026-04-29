@@ -33,6 +33,12 @@
         <i class="fa-solid fa-list-check" aria-hidden="true"></i>
         <span>My Tasks</span>
       </button>
+      @if (canAccessChecklists) {
+        <button class="drawer-nav__item" (click)="navigateTo('/checklists')">
+          <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i>
+          <span>Checklists</span>
+        </button>
+      }
       @if (canAccessTeam) {
         <button class="drawer-nav__item" (click)="navigateTo('/team')">
           <i class="fa-solid fa-users" aria-hidden="true"></i>
@@ -85,6 +91,32 @@
 
     <mat-divider />
 
+    <div class="drawer-section">
+      <span class="drawer-section__label">Dev Tools</span>
+      <div class="theme-seg" role="group" aria-label="Checklist mode override">
+        <button
+          class="theme-seg__btn"
+          [class.theme-seg__btn--active]="checklistModeService.mode() === 'personal'"
+          (click)="setChecklistMode('personal')"
+          aria-label="Use personal checklist mode"
+          [attr.aria-pressed]="checklistModeService.mode() === 'personal'">
+          <i class="fa-solid fa-user-lock" aria-hidden="true"></i>
+          <span>Personal</span>
+        </button>
+        <button
+          class="theme-seg__btn"
+          [class.theme-seg__btn--active]="checklistModeService.mode() === 'practice'"
+          (click)="setChecklistMode('practice')"
+          aria-label="Use practice checklist mode"
+          [attr.aria-pressed]="checklistModeService.mode() === 'practice'">
+          <i class="fa-solid fa-users" aria-hidden="true"></i>
+          <span>Practice</span>
+        </button>
+      </div>
+    </div>
+
+    <mat-divider />
+
     <!-- Sign out -->
     <div class="drawer-footer">
       <button class="drawer-signout" (click)="signOut()">
@@ -106,15 +138,17 @@
       </a>
 
       <div class="top-nav__actions">
-        <button
-          mat-icon-button
-          routerLink="/checklists/new"
-          aria-label="Create new checklist"
-          matTooltip="New checklist"
-          class="nav-icon-btn"
-        >
-          <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
-        </button>
+        @if (canAccessChecklists) {
+          <button
+            mat-icon-button
+            routerLink="/checklists/new"
+            aria-label="Create new checklist"
+            matTooltip="New checklist"
+            class="nav-icon-btn"
+          >
+            <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
+          </button>
+        }
         <button
           mat-icon-button
           (click)="toggleDrawer()"

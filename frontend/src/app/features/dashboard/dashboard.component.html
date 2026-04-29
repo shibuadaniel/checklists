@@ -43,12 +43,18 @@
         <div class="page-header">
           <div>
             <h1 class="page-title">Dashboard</h1>
-            <p class="page-subtitle">Welcome back, {{ userName }}</p>
+            <p class="page-subtitle">
+              @if (isPersonalMode) {
+                Welcome back, {{ userName }}. Personal mode keeps this view focused on your own checklists.
+              } @else {
+                Welcome back, {{ userName }}
+              }
+            </p>
           </div>
         </div>
 
-        <!-- Stat cards — hidden for team members -->
-        @if (!isTeamMember) {
+        <!-- Stat cards — hidden for team members and personal mode -->
+        @if (!isTeamMember && !isPersonalMode) {
           <section class="stat-grid" aria-label="Summary statistics">
             <app-stat-card
               label="Active checklists"
@@ -79,10 +85,10 @@
         }
 
         <!-- Chart + checklist grid -->
-        <div class="content-grid" [class.content-grid--full]="isTeamMember">
+        <div class="content-grid" [class.content-grid--full]="isTeamMember || isPersonalMode">
 
-          <!-- Donut chart card — hidden for team members -->
-          @if (!isTeamMember) {
+          <!-- Donut chart card — hidden for team members and personal mode -->
+          @if (!isTeamMember && !isPersonalMode) {
             <section class="chart-card" aria-label="Completion rate chart">
               <h2 class="card-title">Completion rates</h2>
               <div class="chart-card-inner">
@@ -113,32 +119,40 @@
           }
 
           <!-- Checklist list -->
-          <section class="checklist-list" aria-label="Active checklists">
+          <section class="checklist-list" [attr.aria-label]="isPersonalMode ? 'Personal checklists' : 'Active checklists'">
 
             <!-- Header row: title + filter pills -->
             <div class="checklist-list__header">
-              <h2 class="card-title">All checklists</h2>
-              <div class="recurrence-pills" role="group" aria-label="Filter by recurrence">
-                @for (f of recurrenceFilters; track f.value) {
-                  <button
-                    class="recurrence-pill"
-                    [class.recurrence-pill--active]="recurrenceFilter() === f.value"
-                    [attr.aria-pressed]="recurrenceFilter() === f.value"
-                    (click)="setFilter(f.value)">
-                    {{ f.label }}
-                  </button>
-                }
-              </div>
+              <h2 class="card-title">{{ isPersonalMode ? 'My personal checklists' : 'All checklists' }}</h2>
+              @if (!isPersonalMode) {
+                <div class="recurrence-pills" role="group" aria-label="Filter by recurrence">
+                  @for (f of recurrenceFilters; track f.value) {
+                    <button
+                      class="recurrence-pill"
+                      [class.recurrence-pill--active]="recurrenceFilter() === f.value"
+                      [attr.aria-pressed]="recurrenceFilter() === f.value"
+                      (click)="setFilter(f.value)">
+                      {{ f.label }}
+                    </button>
+                  }
+                </div>
+              }
             </div>
 
-            @if (filteredChecklists().length === 0) {
+            @if ((isPersonalMode ? personalChecklists() : filteredChecklists()).length === 0) {
               <div class="checklist-empty">
                 <i class="fa-solid fa-filter" aria-hidden="true"></i>
-                <span>No {{ recurrenceFilter() === 'all' ? '' : recurrenceFilter() + ' ' }}checklists found.</span>
+                <span>
+                  @if (isPersonalMode) {
+                    No personal checklists yet.
+                  } @else {
+                    No {{ recurrenceFilter() === 'all' ? '' : recurrenceFilter() + ' ' }}checklists found.
+                  }
+                </span>
               </div>
             } @else {
               <ul class="checklist-items" role="list">
-                @for (checklist of filteredChecklists(); track checklist.id) {
+                @for (checklist of (isPersonalMode ? personalChecklists() : filteredChecklists()); track checklist.id) {
                   <li
                     class="checklist-item"
                     matRipple

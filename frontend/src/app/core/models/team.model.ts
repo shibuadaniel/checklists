@@ -15,6 +15,9 @@ export const ALL_ROLES: UserRole[] = [
   'executive',
 ];
 
+/** Checklists hub, drawer item, header + button — single role list per build plan 3.2 */
+export const CHECKLIST_ACCESS_ROLES: readonly UserRole[] = ALL_ROLES;
+
 export interface Team {
   id: string;
   name: string;

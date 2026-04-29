@@ -2,45 +2,57 @@
 
   <!-- Page header -->
   <div class="page-header">
-    <h1 class="page-title">My Tasks</h1>
-    @if (tasks().length > 0) {
+    <div>
+      <h1 class="page-title">My Tasks</h1>
+      @if (isPersonalMode) {
+        <p class="page-subtitle">Personal mode focuses on your own checklist tasks.</p>
+      }
+    </div>
+    @if (visibleTasks().length > 0) {
       <span class="pending-badge">{{ pendingTasks().length }} pending</span>
     }
   </div>
 
   <!-- Group mode segmented control -->
-  <div class="group-seg" role="group" aria-label="Group tasks by">
-    <button
-      type="button"
-      class="group-btn"
-      [class.group-btn--active]="groupMode() === 'checklist'"
-      [attr.aria-pressed]="groupMode() === 'checklist'"
-      (click)="setGroupMode('checklist')">
-      <i class="fa-solid fa-list-check" aria-hidden="true"></i>
-      By Checklist
-    </button>
-    <button
-      type="button"
-      class="group-btn"
-      [class.group-btn--active]="groupMode() === 'status'"
-      [attr.aria-pressed]="groupMode() === 'status'"
-      (click)="setGroupMode('status')">
-      <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
-      By Status
-    </button>
-  </div>
+  @if (!isPersonalMode) {
+    <div class="group-seg" role="group" aria-label="Group tasks by">
+      <button
+        type="button"
+        class="group-btn"
+        [class.group-btn--active]="groupMode() === 'checklist'"
+        [attr.aria-pressed]="groupMode() === 'checklist'"
+        (click)="setGroupMode('checklist')">
+        <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+        By Checklist
+      </button>
+      <button
+        type="button"
+        class="group-btn"
+        [class.group-btn--active]="groupMode() === 'status'"
+        [attr.aria-pressed]="groupMode() === 'status'"
+        (click)="setGroupMode('status')">
+        <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
+        By Status
+      </button>
+    </div>
+  }
 
   <!-- Empty state -->
-  @if (tasks().length === 0) {
+  @if (visibleTasks().length === 0) {
     <div class="empty-state">
       <i class="fa-solid fa-list-check empty-state__icon" aria-hidden="true"></i>
-      <p class="empty-state__title">No tasks assigned to you</p>
-      <p class="empty-state__sub">When tasks are assigned to you, they'll appear here.</p>
+      @if (isPersonalMode) {
+        <p class="empty-state__title">No personal tasks yet</p>
+        <p class="empty-state__sub">Personal checklist tasks will appear here.</p>
+      } @else {
+        <p class="empty-state__title">No tasks assigned to you</p>
+        <p class="empty-state__sub">When tasks are assigned to you, they'll appear here.</p>
+      }
     </div>
   }
 
   <!-- ── By Checklist view ─────────────────────────────── -->
-  @if (groupMode() === 'checklist' && tasks().length > 0) {
+  @if (activeGroupMode() === 'checklist' && visibleTasks().length > 0) {
     @for (group of tasksByChecklist(); track group.checklistId) {
       <mat-card appearance="outlined" class="group-card">
         <mat-card-content>
@@ -94,7 +106,7 @@
   }
 
   <!-- ── By Status view ───────────────────────────────── -->
-  @if (groupMode() === 'status' && tasks().length > 0) {
+  @if (activeGroupMode() === 'status' && visibleTasks().length > 0) {
 
     @if (pendingTasks().length > 0) {
       <mat-card appearance="outlined" class="group-card">
@@ -115,7 +127,9 @@
                   [attr.aria-label]="task.title">
                   <span class="task-label">
                     <span class="task-title">{{ task.title }}</span>
-                    <span class="task-checklist-name">{{ task.checklistName }}</span>
+                    @if (!isPersonalMode) {
+                      <span class="task-checklist-name">{{ task.checklistName }}</span>
+                    }
                   </span>
                 </mat-checkbox>
                 @if (task.dueDate) {
@@ -150,7 +164,9 @@
                   [attr.aria-label]="task.title">
                   <span class="task-label">
                     <span class="task-title">{{ task.title }}</span>
-                    <span class="task-checklist-name">{{ task.checklistName }}</span>
+                    @if (!isPersonalMode) {
+                      <span class="task-checklist-name">{{ task.checklistName }}</span>
+                    }
                   </span>
                 </mat-checkbox>
               </li>

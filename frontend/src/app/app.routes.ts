@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard, roleGuard } from './core/guards/auth.guard';
+import { CHECKLIST_ACCESS_ROLES } from './core/models/team.model';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
@@ -54,11 +55,24 @@ export const routes: Routes = [
           import('./features/team/team.component').then(m => m.TeamComponent),
       },
       {
-        path: 'checklists/new',
-        loadComponent: () =>
-          import('./features/checklists/new-checklist/new-checklist.component').then(
-            m => m.NewChecklistComponent,
-          ),
+        path: 'checklists',
+        canActivate: [roleGuard(...CHECKLIST_ACCESS_ROLES)],
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import(
+                './features/checklists/checklists-index/checklists-index.component'
+              ).then(m => m.ChecklistsIndexComponent),
+          },
+          {
+            path: 'new',
+            loadComponent: () =>
+              import(
+                './features/checklists/new-checklist/new-checklist.component'
+              ).then(m => m.NewChecklistComponent),
+          },
+        ],
       },
       {
         // Settings: admin and executive only

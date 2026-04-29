@@ -7,7 +7,8 @@
     </button>
     <div>
       <h1 class="page-title">New Checklist</h1>
-      <p class="page-subtitle">Set a title, frequency, assignment, and add tasks</p>
+      <p class="page-subtitle">Set a title, visibility mode, task assignment, and add tasks</p>
+      <p class="page-mode">Active mode: {{ checklistModeService.mode() === 'personal' ? 'Personal' : 'Practice' }}</p>
     </div>
   </div>
 
@@ -67,37 +68,46 @@
     </mat-card>
 
     <!-- Card: Assignment -->
-    <mat-card appearance="outlined" aria-label="Assignment">
+    <mat-card appearance="outlined" aria-label="Checklist visibility and task assignment">
       <mat-card-header>
-        <mat-card-title>Assignment</mat-card-title>
+        <mat-card-title>Visibility and assignment</mat-card-title>
       </mat-card-header>
       <mat-card-content>
 
-        <!-- Mode toggle -->
-        <div class="field-label">Assign to</div>
-        <div class="assignment-seg" role="group" aria-label="Assignment mode">
-          <button
-            type="button"
-            class="assignment-btn"
-            [class.assignment-btn--active]="assignmentMode() === 'team'"
-            [attr.aria-pressed]="assignmentMode() === 'team'"
-            (click)="setAssignmentMode('team')">
-            <i class="fa-solid fa-users" aria-hidden="true"></i>
-            Team
-          </button>
-          <button
-            type="button"
-            class="assignment-btn"
-            [class.assignment-btn--active]="assignmentMode() === 'member'"
-            [attr.aria-pressed]="assignmentMode() === 'member'"
-            (click)="setAssignmentMode('member')">
-            <i class="fa-solid fa-user" aria-hidden="true"></i>
-            Members
-          </button>
-        </div>
+        <p class="mat-body-small assignment-description">
+          @if (checklistModeService.mode() === 'personal') {
+            Personal checklists are private to you.
+          } @else {
+            Practice checklists are shared in your team/workspace context.
+          }
+        </p>
 
-        <!-- Team dropdown — visible in team mode -->
-        @if (assignmentMode() === 'team') {
+        @if (checklistModeService.mode() === 'practice') {
+          <div class="field-label">Task assignment</div>
+          <div class="assignment-seg" role="group" aria-label="Task assignment mode">
+            <button
+              type="button"
+              class="assignment-btn"
+              [class.assignment-btn--active]="assignmentMode() === 'team'"
+              [attr.aria-pressed]="assignmentMode() === 'team'"
+              (click)="setAssignmentMode('team')">
+              <i class="fa-solid fa-users" aria-hidden="true"></i>
+              Team
+            </button>
+            <button
+              type="button"
+              class="assignment-btn"
+              [class.assignment-btn--active]="assignmentMode() === 'member'"
+              [attr.aria-pressed]="assignmentMode() === 'member'"
+              (click)="setAssignmentMode('member')">
+              <i class="fa-solid fa-user-check" aria-hidden="true"></i>
+              Specific people
+            </button>
+          </div>
+        }
+
+        <!-- Team dropdown — visible in team assignment mode -->
+        @if (checklistModeService.mode() === 'practice' && assignmentMode() === 'team') {
           <p class="mat-body-small assignment-description">
             Any member can complete these tasks.
           </p>
@@ -112,7 +122,7 @@
         }
 
         <!-- Member mode hint -->
-        @if (assignmentMode() === 'member') {
+        @if (checklistModeService.mode() === 'practice' && assignmentMode() === 'member') {
           <p class="assignment-hint">
             <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
             Assign each task to a specific member below. At least one task must be assigned.
@@ -156,7 +166,7 @@
                 autocomplete="off"
               ></textarea>
 
-              @if (assignmentMode() === 'member') {
+              @if (checklistModeService.mode() === 'practice' && assignmentMode() === 'member') {
                 <mat-divider class="task-divider" />
 
                 <!-- Assignee row — borderless, sits inside the outlined card -->

@@ -6,6 +6,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MyTask } from '../../../core/models/checklist.model';
 import { MOCK_MY_TASKS } from '../../../core/mock-data/tasks.mock';
 import { AuthService } from '../../../core/services/auth.service';
+import { ChecklistModeService } from '../../../core/services/checklist-mode.service';
 import { environment } from '../../../../environments/environment.development';
 
 type GroupMode = 'checklist' | 'status';
@@ -26,20 +27,28 @@ interface ChecklistGroup {
 })
 export class MyTasksComponent implements OnInit {
   private auth = inject(AuthService);
+  readonly checklistModeService = inject(ChecklistModeService);
 
   readonly groupMode = signal<GroupMode>('checklist');
   readonly tasks = signal<MyTask[]>([]);
 
+  readonly visibleTasks = computed(() => {
+    const mode = this.checklistModeService.mode();
+    return this.tasks().filter(task =>
+      mode === 'personal' ? task.checklistMode === 'personal' : task.checklistMode !== 'personal',
+    );
+  });
+
   readonly pendingTasks = computed(() =>
-    this.tasks()
+    this.visibleTasks()
       .filter(t => !t.completed)
       .sort((a, b) => this.dueSortKey(a.dueDate) - this.dueSortKey(b.dueDate)),
   );
-  readonly completedTasks = computed(() => this.tasks().filter(t => t.completed));
+  readonly completedTasks = computed(() => this.visibleTasks().filter(t => t.completed));
 
   readonly tasksByChecklist = computed<ChecklistGroup[]>(() => {
     const map = new Map<string, ChecklistGroup>();
-    for (const task of this.tasks()) {
+    for (const task of this.visibleTasks()) {
       if (!map.has(task.checklistId)) {
         map.set(task.checklistId, {
           checklistId: task.checklistId,
@@ -55,6 +64,10 @@ export class MyTasksComponent implements OnInit {
     return Array.from(map.values());
   });
 
+  readonly activeGroupMode = computed<GroupMode>(() =>
+    this.isPersonalMode ? 'status' : this.groupMode(),
+  );
+
   ngOnInit(): void {
     if (environment.useMock) {
       // BACKEND: GET /api/tasks?assigneeId=currentUser.id (member)
@@ -65,6 +78,10 @@ export class MyTasksComponent implements OnInit {
 
   setGroupMode(mode: GroupMode): void {
     this.groupMode.set(mode);
+  }
+
+  get isPersonalMode(): boolean {
+    return this.checklistModeService.mode() === 'personal';
   }
 
   toggleTask(task: MyTask): void {
