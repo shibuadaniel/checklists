@@ -69,6 +69,19 @@
         }
       </button>
 
+      <div class="demo-block">
+        <button
+          type="button"
+          mat-stroked-button
+          class="demo-btn full-width"
+          [disabled]="isLoading()"
+          (click)="tryDemo()"
+        >
+          Try full demo (administrator)
+        </button>
+        <p class="demo-hint">Explores the app as an administrator in team (practice) mode. No real sign-in; some server actions may not apply.</p>
+      </div>
+
     </form>
 
   </div>

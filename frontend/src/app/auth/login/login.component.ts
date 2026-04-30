@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../core/services/auth.service';
+import { ChecklistModeService } from '../../core/services/checklist-mode.service';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +32,7 @@ export class LoginComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  private checklistMode = inject(ChecklistModeService);
 
   readonly isLoading = this.auth.isLoading;
   readonly hidePassword = signal(true);
@@ -56,6 +58,12 @@ export class LoginComponent {
 
   togglePassword(): void {
     this.hidePassword.update(v => !v);
+  }
+
+  tryDemo(): void {
+    this.auth.signInAsDemo();
+    this.checklistMode.setMode('practice');
+    this.router.navigate(['/dashboard'], { queryParams: { mode: 'practice' } });
   }
 
   async onSubmit(): Promise<void> {

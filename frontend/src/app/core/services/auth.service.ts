@@ -10,12 +10,30 @@ export interface AuthUser {
   avatarUrl?: string;
 }
 
+/** In-memory only — no Supabase session; full app preview (administrator). */
+const DEMO_USER: AuthUser = {
+  id: '00000000-0000-4000-8000-000000000001',
+  email: 'demo@cheklists.app',
+  fullName: 'Demo Admin',
+  role: 'administrator',
+  teamId: 'team-1',
+};
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private supabase = inject(SupabaseService);
 
   readonly currentUser = signal<AuthUser | null>(null);
   readonly isLoading = signal(false);
+
+  /**
+   * Skip Supabase; sets an administrator demo user so routes and UI for all
+   * roles (Settings, team management, checklists, etc.) are reachable. No real
+   * Supabase session — data-changing calls may still fail.
+   */
+  signInAsDemo(): void {
+    this.currentUser.set({ ...DEMO_USER });
+  }
 
   async signIn(email: string, password: string): Promise<void> {
     this.isLoading.set(true);

@@ -159,6 +159,28 @@ $bp-lg: 1024px;
   }
 }
 
+.demo-block {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.demo-btn {
+  height: 48px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.demo-hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--mat-sys-on-surface-variant);
+  text-align: center;
+}
+
 .submit-btn {
   // Mobile: tall tap target
   height: 52px;
