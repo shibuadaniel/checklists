@@ -151,8 +151,8 @@
           <button
             type="button"
             [matMenuTriggerFor]="newChecklistMenu"
-            aria-label="Add New — build or import checklist"
-            matTooltip="Build or import checklist"
+            aria-label="Add New — build or import a checklist"
+            matTooltip="Build or import a checklist"
             class="top-nav-add-new"
           >
             <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
@@ -161,11 +161,11 @@
           <mat-menu #newChecklistMenu="matMenu">
             <button mat-menu-item type="button" (click)="navigateToNewChecklistBuild()">
               <i class="fa-solid fa-list-check fa-fw" aria-hidden="true"></i>
-              <span>Build a checklist</span>
+              <span>Build a Checklist</span>
             </button>
             <button mat-menu-item type="button" (click)="navigateToNewChecklistImport()">
               <i class="fa-solid fa-file-import fa-fw" aria-hidden="true"></i>
-              <span>Import a checklist</span>
+              <span>Import a Checklist</span>
             </button>
             <button
               mat-menu-item
