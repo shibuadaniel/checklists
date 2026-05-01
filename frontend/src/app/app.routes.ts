@@ -72,6 +72,13 @@ export const routes: Routes = [
                 './features/checklists/new-checklist/new-checklist.component'
               ).then(m => m.NewChecklistComponent),
           },
+          {
+            path: 'import',
+            loadComponent: () =>
+              import(
+                './features/checklists/checklist-import/checklist-import.component'
+              ).then(m => m.ChecklistImportComponent),
+          },
         ],
       },
       {

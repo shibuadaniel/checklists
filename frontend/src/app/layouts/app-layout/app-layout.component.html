@@ -33,7 +33,7 @@
         <i class="fa-solid fa-list-check" aria-hidden="true"></i>
         <span>My Tasks</span>
       </button>
-      @if (canAccessChecklists) {
+      @if (canAccessChecklists()) {
         <button class="drawer-nav__item" (click)="navigateTo('/checklists')">
           <i class="fa-solid fa-clipboard-list" aria-hidden="true"></i>
           <span>Checklists</span>
@@ -138,16 +138,27 @@
       </a>
 
       <div class="top-nav__actions">
-        @if (canAccessChecklists) {
+        @if (canAccessChecklists()) {
           <button
-            mat-icon-button
-            routerLink="/checklists/new"
-            aria-label="Create new checklist"
-            matTooltip="New checklist"
-            class="nav-icon-btn"
+            type="button"
+            [matMenuTriggerFor]="newChecklistMenu"
+            aria-label="Add New — build or import checklist"
+            matTooltip="Build or import checklist"
+            class="top-nav-add-new"
           >
             <i class="fa-solid fa-circle-plus" aria-hidden="true"></i>
+            <span>Add New</span>
           </button>
+          <mat-menu #newChecklistMenu="matMenu">
+            <button mat-menu-item type="button" (click)="navigateToNewChecklistBuild()">
+              <i class="fa-solid fa-list-check fa-fw" aria-hidden="true"></i>
+              <span>Build a checklist</span>
+            </button>
+            <button mat-menu-item type="button" (click)="navigateToNewChecklistImport()">
+              <i class="fa-solid fa-file-import fa-fw" aria-hidden="true"></i>
+              <span>Import a checklist</span>
+            </button>
+          </mat-menu>
         }
         <button
           mat-icon-button

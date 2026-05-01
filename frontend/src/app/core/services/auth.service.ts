@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { SupabaseService } from './supabase.service';
+import { parseUserRole } from '../models/team.model';
 
 export interface AuthUser {
   id: string;
@@ -102,7 +103,7 @@ export class AuthService {
       id: data['id'],
       email: data['email'] ?? '',
       fullName: data['full_name'] ?? '',
-      role: (data['role'] as AuthUser['role']) ?? 'team_member',
+      role: parseUserRole(data['role']) ?? 'team_member',
       teamId: data['team_id'] ?? undefined,
       avatarUrl: data['avatar_url'] ?? undefined,
     };

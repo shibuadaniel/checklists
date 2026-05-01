@@ -30,6 +30,10 @@ import { MOCK_TEAM, MOCK_TEAMS } from '../../../core/mock-data/team.mock';
 import { SettingsService } from '../../../core/services/settings.service';
 import { ChecklistModeService } from '../../../core/services/checklist-mode.service';
 import { environment } from '../../../../environments/environment.development';
+import {
+  CHECKLIST_IMPORT_NAV_STATE_KEY,
+  type ChecklistImportNavPayload,
+} from '../checklist-import-nav';
 
 interface TaskFormGroup {
   title: FormControl<string>;
@@ -99,12 +103,32 @@ export class NewChecklistComponent implements OnInit {
       this.members.set(MOCK_TEAM.filter(m => m.status === 'active'));
       this.teams.set(MOCK_TEAMS);
     }
-    this.addTask();
+
+    const imported = this.consumeImportFromNavigationState();
+    if (imported) {
+      this.applyImportedChecklist(imported.title, imported.tasks);
+    } else {
+      this.addTask();
+    }
 
     // Auto-update due date whenever recurrence changes
     this.form.controls.recurrence.valueChanges.subscribe(rec => {
       this.form.controls.dueDate.setValue(this.settingsService.dueDateFor(rec));
     });
+  }
+
+  private consumeImportFromNavigationState(): ChecklistImportNavPayload | null {
+    const state = history.state as Record<string, unknown> | null | undefined;
+    const raw = state?.[CHECKLIST_IMPORT_NAV_STATE_KEY];
+    if (!raw || typeof raw !== 'object') return null;
+    const payload = raw as { title?: unknown; tasks?: unknown };
+    if (typeof payload.title !== 'string' || !Array.isArray(payload.tasks)) return null;
+    const tasks = payload.tasks.filter((t): t is string => typeof t === 'string' && t.length > 0);
+    if (tasks.length === 0) return null;
+    const nextState = { ...state };
+    delete nextState[CHECKLIST_IMPORT_NAV_STATE_KEY];
+    history.replaceState(nextState, '');
+    return { title: payload.title, tasks };
   }
 
   addTask(): void {
@@ -117,6 +141,21 @@ export class NewChecklistComponent implements OnInit {
 
   removeTask(index: number): void {
     if (this.tasksArray.length > 1) this.tasksArray.removeAt(index);
+  }
+
+  private applyImportedChecklist(title: string, taskTitles: string[]): void {
+    this.form.controls.title.setValue(title);
+    while (this.tasksArray.length > 0) {
+      this.tasksArray.removeAt(0);
+    }
+    for (const t of taskTitles) {
+      const group = this.fb.nonNullable.group<TaskFormGroup>({
+        title: this.fb.nonNullable.control(t, Validators.required),
+        assigneeId: this.fb.nonNullable.control(''),
+      });
+      this.tasksArray.push(group);
+    }
+    this.snackBar.open('Imported title and tasks replaced the form.', '', { duration: 3500 });
   }
 
   onTaskKeydown(event: KeyboardEvent, index: number): void {

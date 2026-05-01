@@ -64,19 +64,67 @@ main {
   &__actions {
     display: flex;
     align-items: center;
+    gap: 8px;
     margin-right: -8px;
   }
 }
 
-// Nav icon buttons (Font Awesome, consistent 20px)
-.nav-icon-btn i {
+// Add New — same visual language as drawer nav items (icon + label), compact for top bar
+.top-nav-add-new {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  margin: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 150ms ease;
+  flex-shrink: 0;
+
+  i {
+    font-size: 14px;
+    width: 1em;
+    text-align: center;
+    color: var(--mat-sys-on-surface-variant);
+    flex-shrink: 0;
+    transition: color 150ms ease;
+  }
+
+  &:hover {
+    background: var(--mat-sys-surface-variant);
+
+    i {
+      color: var(--mat-sys-primary);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: 2px;
+  }
+}
+
+// Nav icon buttons (Font Awesome + Material icons in header)
+.nav-icon-btn i,
+.nav-icon-btn mat-icon {
   font-size: 20px;
+  width: 20px;
+  height: 20px;
   color: var(--mat-sys-on-surface-variant);
   transition: color 150ms ease;
 }
 
 .nav-icon-btn:hover i,
-.nav-icon-btn:focus-visible i {
+.nav-icon-btn:focus-visible i,
+.nav-icon-btn:hover mat-icon,
+.nav-icon-btn:focus-visible mat-icon {
   color: var(--mat-sys-primary);
 }
 

@@ -1,6 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AuthService } from './core/services/auth.service';
 import { ThemeService } from './core/services/theme.service';
 
 @Component({
@@ -8,13 +7,8 @@ import { ThemeService } from './core/services/theme.service';
   imports: [RouterOutlet],
   template: '<router-outlet />',
 })
-export class App implements OnInit {
-  private auth = inject(AuthService);
+export class App {
   // Inject ThemeService so its constructor runs (and theme is applied)
   // immediately on boot — before any component renders.
   private theme = inject(ThemeService);
-
-  async ngOnInit(): Promise<void> {
-    await this.auth.restoreSession();
-  }
 }

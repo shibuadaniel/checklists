@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { UserRole } from '../models/team.model';
+import { parseUserRole, UserRole } from '../models/team.model';
 
 export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
@@ -19,7 +19,7 @@ export const roleGuard = (...allowedRoles: UserRole[]): CanActivateFn => () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  const role = auth.currentUser()?.role as UserRole | undefined;
+  const role = parseUserRole(auth.currentUser()?.role) ?? undefined;
   if (role && allowedRoles.includes(role)) return true;
   return router.createUrlTree(['/dashboard']);
 };

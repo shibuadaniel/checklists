@@ -67,6 +67,11 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "poll": 1000,
+            "liveReload": true,
+            "watch": true
+          },
           "configurations": {
             "production": {
               "buildTarget": "frontend:build:production"

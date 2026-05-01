@@ -1,0 +1,48 @@
+<div class="checklist-import-page">
+  <div class="page-header">
+    <button mat-icon-button type="button" (click)="cancel()" class="back-btn" aria-label="Go back">
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+    </button>
+    <div>
+      <h1 class="page-title">Import a checklist</h1>
+      <p class="page-subtitle">
+        Drop a UTF-8 <strong>.txt</strong> or <strong>.csv</strong> file. First line or row = title; following lines =
+        tasks.
+      </p>
+    </div>
+  </div>
+
+  <mat-card appearance="outlined" class="import-card" aria-label="File import">
+    <mat-card-header>
+      <mat-card-title>Your file</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <input
+        #fileInput
+        type="file"
+        class="file-input"
+        accept=".txt,.csv,text/plain,text/csv"
+        (change)="onFileSelected($event)"
+        aria-label="Choose a .txt or .csv file"
+      />
+
+      <button
+        type="button"
+        class="drop-zone"
+        [class.drop-zone--active]="dropActive()"
+        (dragenter)="onDragEnter($event)"
+        (dragleave)="onDragLeave($event)"
+        (dragover)="onDragOver($event)"
+        (drop)="onDrop($event)"
+        (click)="triggerFileInput(fileInput)"
+      >
+        <mat-icon class="drop-zone__icon" aria-hidden="true">upload_file</mat-icon>
+        <p class="drop-zone__primary">Drag and drop your file here</p>
+        <p class="drop-zone__secondary">or click to choose from your computer</p>
+        <p class="drop-zone__limits mat-body-small">
+          Up to {{ importMaxFileMb }} MB · max {{ importMaxTasks }} tasks
+        </p>
+      </button>
+    </mat-card-content>
+  </mat-card>
+</div>

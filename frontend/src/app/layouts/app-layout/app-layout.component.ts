@@ -1,4 +1,12 @@
-import { Component, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,6 +14,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
 import { filter, Subscription } from 'rxjs';
 
 import { AuthService } from '../../core/services/auth.service';
@@ -14,7 +23,12 @@ import { SupabaseService } from '../../core/services/supabase.service';
 import { ChecklistModeService } from '../../core/services/checklist-mode.service';
 import { AvatarComponent } from '../../shared/components/avatar/avatar.component';
 import { ChecklistMode } from '../../core/models/checklist.model';
-import { CHECKLIST_ACCESS_ROLES, ROLE_LABELS, UserRole } from '../../core/models/team.model';
+import {
+  CHECKLIST_ACCESS_ROLES,
+  parseUserRole,
+  ROLE_LABELS,
+  UserRole,
+} from '../../core/models/team.model';
 
 @Component({
   selector: 'app-layout',
@@ -28,6 +42,7 @@ import { CHECKLIST_ACCESS_ROLES, ROLE_LABELS, UserRole } from '../../core/models
     MatSnackBarModule,
     MatTooltipModule,
     MatSelectModule,
+    MatMenuModule,
     AvatarComponent,
   ],
   templateUrl: './app-layout.component.html',
@@ -46,6 +61,14 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
 
   readonly uploadingAvatar = signal(false);
   private navigationSub?: Subscription;
+
+  /** Signal-based so the header updates when session restore sets the user. */
+  readonly canAccessChecklists = computed(() => {
+    const user = this.auth.currentUser();
+    if (!user) return false;
+    const role = parseUserRole(user.role) ?? 'team_member';
+    return CHECKLIST_ACCESS_ROLES.includes(role);
+  });
 
   get userName(): string {
     const user = this.auth.currentUser();
@@ -73,11 +96,6 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
   get canAccessTeam(): boolean {
     const role = this.auth.currentUser()?.role;
     return role === 'administrator' || role === 'executive' || role === 'team_lead';
-  }
-
-  get canAccessChecklists(): boolean {
-    const role = this.auth.currentUser()?.role as UserRole | undefined;
-    return role != null && CHECKLIST_ACCESS_ROLES.includes(role);
   }
 
   get initials(): string {
@@ -148,6 +166,14 @@ export class AppLayoutComponent implements OnInit, OnDestroy {
   navigateTo(path: string): void {
     this.router.navigate([path]);
     this.drawer.close();
+  }
+
+  navigateToNewChecklistBuild(): void {
+    this.router.navigate(['/checklists/new']);
+  }
+
+  navigateToNewChecklistImport(): void {
+    this.router.navigate(['/checklists/import']);
   }
 
   setChecklistMode(mode: ChecklistMode): void {
