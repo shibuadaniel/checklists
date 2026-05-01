@@ -39,6 +39,15 @@
           <span>Checklists</span>
         </button>
       }
+      <button
+        class="drawer-nav__item"
+        type="button"
+        disabled
+        aria-disabled="true"
+        aria-label="Checklists Library — coming soon">
+        <i class="fa-solid fa-book" aria-hidden="true"></i>
+        <span>Checklists Library</span>
+      </button>
       @if (canAccessTeam) {
         <button class="drawer-nav__item" (click)="navigateTo('/team')">
           <i class="fa-solid fa-users" aria-hidden="true"></i>
@@ -157,6 +166,14 @@
             <button mat-menu-item type="button" (click)="navigateToNewChecklistImport()">
               <i class="fa-solid fa-file-import fa-fw" aria-hidden="true"></i>
               <span>Import a checklist</span>
+            </button>
+            <button
+              mat-menu-item
+              type="button"
+              disabled
+              aria-label="Select from Library — coming soon">
+              <i class="fa-solid fa-book fa-fw" aria-hidden="true"></i>
+              <span>Select from Library</span>
             </button>
           </mat-menu>
         }

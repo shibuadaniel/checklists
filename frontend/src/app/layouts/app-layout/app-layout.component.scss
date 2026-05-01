@@ -218,6 +218,20 @@ main {
       outline: 2px solid var(--mat-sys-primary);
       outline-offset: -2px;
     }
+
+    &:disabled,
+    &[disabled] {
+      opacity: 0.45;
+      cursor: not-allowed;
+
+      &:hover {
+        background: transparent;
+      }
+
+      &:hover i {
+        color: var(--mat-sys-on-surface-variant);
+      }
+    }
   }
 }
 
